@@ -10,10 +10,10 @@ kuhiro-weather-app/
 
 ├── backend/ # Django + DRF
 
-├── frontend/ # React + Tailwind + TypeScript
+├── frontend/ # React + TypeScript
 
 
-## ✅ Day 1 Progress
+## ✅ Progress till now
 
 - [x] Project initialized
 - [x] Django backend created
@@ -21,3 +21,4 @@ kuhiro-weather-app/
 - [x] GitHub repo connected
 
 More features coming soon...
+
