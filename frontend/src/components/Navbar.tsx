@@ -7,7 +7,7 @@ const Navbar = () => {
       <h1 className="navbar-brand">Kuhiro ☁️</h1>
       <ul className="navbar-links">
         <li><Link to="/">Home</Link></li>
-        {/* Future links like Forecast, About can go here */}
+        <li><Link to="/forecast">Forecast</Link></li>
       </ul>
     </nav>
   );
