@@ -1,11 +1,14 @@
-import "./index.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
 
 function App() {
   return (
-    <div className="container">
-      <h1 className="title">Kuhiro ☁️</h1>
-      <p className="subtitle">Real-Time Global Weather Forecast Web Application</p>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {/* More pages can go here later */}
+      </Routes>
+    </Router>
   );
 }
 
