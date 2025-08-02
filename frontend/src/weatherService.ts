@@ -11,3 +11,15 @@ export async function fetchWeather(city: string) {
     return null;
   }
 }
+
+export async function fetchForecast(city: string) {
+  try {
+    const response = await fetch(`${API_URL}/api/forecast/?city=${city}`);
+    if (!response.ok) throw new Error("Failed to fetch forecast");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching forecast:", error);
+    return null;
+  }
+}
