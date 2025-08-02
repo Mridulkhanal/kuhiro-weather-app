@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { fetchForecast } from "../weatherService";
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid
+} from "recharts";
 
 const Forecast = () => {
   const [forecastData, setForecastData] = useState<any[]>([]);
@@ -10,7 +13,7 @@ const Forecast = () => {
     fetchForecast(city).then((data) => {
       if (data && data.list) {
         setForecastData(data.list);
-        console.log("Forecast data:", data.list); // Preview in dev tools
+        console.log("Forecast data:", data.list);
       }
     });
   }, [city]);
@@ -40,13 +43,21 @@ const Forecast = () => {
         </button>
       </div>
 
-      <ul style={{ textAlign: "left", marginTop: "20px" }}>
-        {forecastData.slice(0, 6).map((item, index) => (
-          <li key={index}>
-            {item.dt_txt}: {item.main.temp}°C, {item.weather[0].description}
-          </li>
-        ))}
-      </ul>
+      <h3 style={{ marginTop: "40px" }}>📈 Temperature Trend (Next Hours)</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={forecastData.slice(0, 8)}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="dt_txt" />
+          <YAxis domain={["auto", "auto"]} />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="main.temp"
+            stroke="#1a73e8"
+            strokeWidth={2}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 };
