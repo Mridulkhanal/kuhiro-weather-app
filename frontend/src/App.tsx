@@ -1,10 +1,8 @@
-// src/App.tsx
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Forecast from "./pages/Forecast";
 import Navbar from "./components/Navbar";
-import "./index.css";
+import "./index.css"; // make sure this is imported
 
 function App() {
   return (
