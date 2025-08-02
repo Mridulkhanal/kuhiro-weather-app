@@ -10,7 +10,7 @@ import {
   CartesianGrid,
 } from "recharts";
 
-// 📊 Function to convert 3-hour data to daily average
+// Convert 3-hour data to daily average
 const getDailyAverageData = (data: any[]) => {
   const dailyMap: { [date: string]: { temps: number[]; humidities: number[] } } = {};
 
@@ -41,12 +41,18 @@ const Forecast = () => {
   const [city, setCity] = useState("Kathmandu");
   const [inputValue, setInputValue] = useState("");
   const [viewMode, setViewMode] = useState<"hourly" | "daily">("hourly");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
+    setLoading(true);
+    setError("");
     fetchForecast(city).then((data) => {
+      setLoading(false);
       if (data && data.list) {
         setForecastData(data.list);
-        console.log("Forecast data:", data.list);
+      } else {
+        setError("Could not fetch forecast data. Please try again.");
       }
     });
   }, [city]);
@@ -60,7 +66,7 @@ const Forecast = () => {
     viewMode === "hourly" ? forecastData.slice(0, 8) : getDailyAverageData(forecastData);
 
   return (
-    <div className="container">
+    <div style={{ maxWidth: "1000px", margin: "auto", padding: "0 20px" }}>
       <h2 className="title">Weather Forecast 🌦️</h2>
 
       <div style={{ margin: "20px 0" }}>
@@ -73,27 +79,38 @@ const Forecast = () => {
         />
         <button
           onClick={handleSearch}
-          style={{ padding: "8px 12px", marginLeft: "8px", fontSize: "1rem" }}
+          style={{
+            padding: "8px 12px",
+            marginLeft: "10px",
+            fontSize: "1rem",
+            backgroundColor: "#1a73e8",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
         >
           Search
         </button>
 
-        {/* 🔁 Toggle button */}
         <button
-          onClick={() =>
-            setViewMode((prev) => (prev === "hourly" ? "daily" : "hourly"))
-          }
+          onClick={() => setViewMode((prev) => (prev === "hourly" ? "daily" : "hourly"))}
           style={{
             padding: "8px 16px",
             marginLeft: "20px",
             fontSize: "0.9rem",
             backgroundColor: "#eee",
             border: "1px solid #ccc",
+            borderRadius: "5px",
+            cursor: "pointer",
           }}
         >
           View: {viewMode === "hourly" ? "Hourly (Next 24h)" : "Daily (5 Days)"}
         </button>
       </div>
+
+      {loading && <p>Loading forecast data...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       {/* 🌡️ Temperature Chart */}
       <h3 style={{ marginTop: "40px" }}>
@@ -105,18 +122,13 @@ const Forecast = () => {
           <XAxis dataKey="dt_txt" />
           <YAxis domain={["auto", "auto"]} />
           <Tooltip />
-          <Line
-            type="monotone"
-            dataKey="main.temp"
-            stroke="#1a73e8"
-            strokeWidth={2}
-          />
+          <Line type="monotone" dataKey="main.temp" stroke="#1a73e8" strokeWidth={2} />
         </LineChart>
       </ResponsiveContainer>
       <ul style={{ fontSize: "0.9rem", marginTop: "10px", color: "#555" }}>
-        <li>🌡️ Shows temperature forecast at 3-hour intervals (Hourly) or daily averages (Daily)</li>
-        <li>🔁 Switch using toggle to compare short-term vs long-term trends</li>
-        <li>📅 Helpful for planning by time of day or day of week</li>
+        <li>🌡️ Shows temperature forecast in °C (hourly or averaged daily)</li>
+        <li>🔁 Toggle to see either detailed 3-hour data or a clean 5-day trend</li>
+        <li>📅 Great for travel planning, agriculture, or clothing choices</li>
       </ul>
 
       {/* 💧 Humidity Chart */}
@@ -129,18 +141,13 @@ const Forecast = () => {
           <XAxis dataKey="dt_txt" />
           <YAxis domain={["auto", "auto"]} />
           <Tooltip />
-          <Line
-            type="monotone"
-            dataKey="main.humidity"
-            stroke="#00b894"
-            strokeWidth={2}
-          />
+          <Line type="monotone" dataKey="main.humidity" stroke="#00b894" strokeWidth={2} />
         </LineChart>
       </ResponsiveContainer>
       <ul style={{ fontSize: "0.9rem", marginTop: "10px", color: "#555" }}>
-        <li>💧 Shows expected humidity level in % (Hourly or Daily)</li>
-        <li>📈 Helps understand moisture conditions in air</li>
-        <li>🌿 Useful for farming, allergies, or comfort level</li>
+        <li>💧 Humidity levels in % to understand air moisture</li>
+        <li>🌿 Helpful for allergies, agriculture, or comfort planning</li>
+        <li>🔁 Switch between detailed hourly view or daily average</li>
       </ul>
     </div>
   );
