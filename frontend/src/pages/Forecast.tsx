@@ -10,10 +10,37 @@ import {
   CartesianGrid,
 } from "recharts";
 
+// 📊 Function to convert 3-hour data to daily average
+const getDailyAverageData = (data: any[]) => {
+  const dailyMap: { [date: string]: { temps: number[]; humidities: number[] } } = {};
+
+  data.forEach((item) => {
+    const date = item.dt_txt.split(" ")[0];
+    if (!dailyMap[date]) {
+      dailyMap[date] = { temps: [], humidities: [] };
+    }
+    dailyMap[date].temps.push(item.main.temp);
+    dailyMap[date].humidities.push(item.main.humidity);
+  });
+
+  return Object.keys(dailyMap).map((date) => {
+    const temps = dailyMap[date].temps;
+    const humidities = dailyMap[date].humidities;
+    return {
+      dt_txt: date,
+      main: {
+        temp: temps.reduce((a, b) => a + b, 0) / temps.length,
+        humidity: humidities.reduce((a, b) => a + b, 0) / humidities.length,
+      },
+    };
+  });
+};
+
 const Forecast = () => {
   const [forecastData, setForecastData] = useState<any[]>([]);
   const [city, setCity] = useState("Kathmandu");
   const [inputValue, setInputValue] = useState("");
+  const [viewMode, setViewMode] = useState<"hourly" | "daily">("hourly");
 
   useEffect(() => {
     fetchForecast(city).then((data) => {
@@ -29,9 +56,12 @@ const Forecast = () => {
     setCity(searchCity);
   };
 
+  const chartData =
+    viewMode === "hourly" ? forecastData.slice(0, 8) : getDailyAverageData(forecastData);
+
   return (
     <div className="container">
-      <h2 className="title">5-Day / 3-Hour Forecast 🌦️</h2>
+      <h2 className="title">Weather Forecast 🌦️</h2>
 
       <div style={{ margin: "20px 0" }}>
         <input
@@ -47,12 +77,30 @@ const Forecast = () => {
         >
           Search
         </button>
+
+        {/* 🔁 Toggle button */}
+        <button
+          onClick={() =>
+            setViewMode((prev) => (prev === "hourly" ? "daily" : "hourly"))
+          }
+          style={{
+            padding: "8px 16px",
+            marginLeft: "20px",
+            fontSize: "0.9rem",
+            backgroundColor: "#eee",
+            border: "1px solid #ccc",
+          }}
+        >
+          View: {viewMode === "hourly" ? "Hourly (Next 24h)" : "Daily (5 Days)"}
+        </button>
       </div>
 
-      {/* 📈 Temperature Chart */}
-      <h3 style={{ marginTop: "40px" }}>🌡️ Temperature Trend (Next Hours)</h3>
+      {/* 🌡️ Temperature Chart */}
+      <h3 style={{ marginTop: "40px" }}>
+        🌡️ Temperature Trend ({viewMode === "hourly" ? "Next 24 Hours" : "Next 5 Days"})
+      </h3>
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={forecastData.slice(0, 8)}>
+        <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="dt_txt" />
           <YAxis domain={["auto", "auto"]} />
@@ -65,11 +113,18 @@ const Forecast = () => {
           />
         </LineChart>
       </ResponsiveContainer>
+      <ul style={{ fontSize: "0.9rem", marginTop: "10px", color: "#555" }}>
+        <li>🌡️ Shows temperature forecast at 3-hour intervals (Hourly) or daily averages (Daily)</li>
+        <li>🔁 Switch using toggle to compare short-term vs long-term trends</li>
+        <li>📅 Helpful for planning by time of day or day of week</li>
+      </ul>
 
       {/* 💧 Humidity Chart */}
-      <h3 style={{ marginTop: "40px" }}>💧 Humidity Trend (Next Hours)</h3>
+      <h3 style={{ marginTop: "40px" }}>
+        💧 Humidity Trend ({viewMode === "hourly" ? "Next 24 Hours" : "Next 5 Days"})
+      </h3>
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={forecastData.slice(0, 8)}>
+        <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="dt_txt" />
           <YAxis domain={["auto", "auto"]} />
@@ -82,6 +137,11 @@ const Forecast = () => {
           />
         </LineChart>
       </ResponsiveContainer>
+      <ul style={{ fontSize: "0.9rem", marginTop: "10px", color: "#555" }}>
+        <li>💧 Shows expected humidity level in % (Hourly or Daily)</li>
+        <li>📈 Helps understand moisture conditions in air</li>
+        <li>🌿 Useful for farming, allergies, or comfort level</li>
+      </ul>
     </div>
   );
 };
