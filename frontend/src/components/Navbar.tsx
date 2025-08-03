@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useLanguage } from "../context/LanguageContext"; // NEW
+import { useLanguage } from "../context/LanguageContext";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("kuhiro_dark_mode") === "true";
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    const saved = localStorage.getItem("kuhiro_dark_mode");
+    if (saved !== null) return saved === "true";
+
+    // No preference saved → use time-based default
+    const hour = new Date().getHours();
+    return hour < 6 || hour >= 18;
   });
 
   const [unit, setUnit] = useState<"metric" | "imperial">(() => {
