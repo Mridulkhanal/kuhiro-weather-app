@@ -27,3 +27,32 @@
 .navbar-links a:hover {
   text-decoration: underline;
 }
+
+/* 🌙 Dark Mode Toggle Button */
+.dark-toggle {
+  padding: 6px 12px;
+  background-color: white;
+  color: #4a90e2;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+body.dark {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+body.dark .navbar {
+  background-color: #1f1f1f;
+}
+
+body.dark .navbar-links a {
+  color: #f0f0f0;
+}
+
+body.dark .dark-toggle {
+  background-color: #444;
+  color: white;
+}
