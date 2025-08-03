@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchWeather } from "../weatherService";
 import { useLanguage } from "../context/LanguageContext";
 import ClipLoader from "react-spinners/ClipLoader";
+import WeatherIcon from "../components/WeatherIcon";
 
 const Home = () => {
   const [weather, setWeather] = useState<any>(null);
@@ -125,6 +126,7 @@ const Home = () => {
           <h3>
             {lang === "ne" ? "मौसम:" : "Weather in"} {weather.name}
           </h3>
+          <WeatherIcon condition={weather.weather[0].main} />
           <p>🌡️ {lang === "ne" ? "तापक्रम" : "Temperature"}: {weather.main.temp}{unitSymbol}</p>
           <p>💧 {lang === "ne" ? "आर्द्रता" : "Humidity"}: {weather.main.humidity}%</p>
           <p>🌬️ {lang === "ne" ? "हावा" : "Wind"}: {weather.wind.speed} m/s</p>
