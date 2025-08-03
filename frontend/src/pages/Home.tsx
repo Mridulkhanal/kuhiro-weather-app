@@ -96,7 +96,9 @@ const Home = () => {
       {weather && (
         <div style={{ marginTop: "40px" }}>
           <h3>Weather in {weather.name}</h3>
-          <p>🌡️ Temperature: {weather.main.temp}°C</p>
+          <p>🌡️ Temperature: {weather.main.temp}
+            {localStorage.getItem("kuhiro_unit") === "imperial" ? "°F" : "°C"}
+          </p>
           <p>💧 Humidity: {weather.main.humidity}%</p>
           <p>🌬️ Wind: {weather.wind.speed} m/s</p>
           <p>⛅ Condition: {weather.weather[0].description}</p>

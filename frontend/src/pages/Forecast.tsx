@@ -142,7 +142,7 @@ const Forecast = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <h3 style={{ marginTop: "40px" }}>
-        🌡️ Temperature ({viewMode === "hourly" ? "Next 24 Hours" : "Next 5 Days"})
+        🌡️ Temperature ({viewMode === "hourly" ? "Next 24 Hours" : "Next 5 Days"}) – {localStorage.getItem("kuhiro_unit") === "imperial" ? "°F" : "°C"}
       </h3>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData}>
