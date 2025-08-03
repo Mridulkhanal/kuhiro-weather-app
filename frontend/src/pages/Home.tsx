@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchWeather } from "../weatherService";
 import { useLanguage } from "../context/LanguageContext";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Home = () => {
   const [weather, setWeather] = useState<any>(null);
@@ -14,7 +15,6 @@ const Home = () => {
   const unit = localStorage.getItem("kuhiro_unit") === "imperial" ? "imperial" : "metric";
   const unitSymbol = unit === "imperial" ? "°F" : "°C";
 
-  // Load city search history
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("kuhiro_history") || "[]");
     setHistory(saved);
@@ -25,17 +25,14 @@ const Home = () => {
     if (searchCity) {
       setCity(searchCity);
       localStorage.setItem("kuhiro_last_city", searchCity);
-
       const updatedHistory = [searchCity, ...history.filter((c) => c !== searchCity)].slice(0, 5);
       setHistory(updatedHistory);
       localStorage.setItem("kuhiro_history", JSON.stringify(updatedHistory));
     }
   };
 
-  // Geolocation or last city on load
   useEffect(() => {
     const savedCity = localStorage.getItem("kuhiro_last_city");
-
     if (savedCity) {
       setCity(savedCity);
     } else {
@@ -54,9 +51,7 @@ const Home = () => {
             setCity("Kathmandu");
           }
         },
-        () => {
-          setCity("Kathmandu");
-        }
+        () => setCity("Kathmandu")
       );
     }
   }, []);
@@ -91,8 +86,8 @@ const Home = () => {
           placeholder={lang === "ne" ? "सहर टाइप गर्नुहोस्..." : "Enter city..."}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          style={{ padding: "8px", fontSize: "1rem", width: "100%" }}
           list="city-history"
+          style={{ padding: "8px", fontSize: "1rem", width: "100%" }}
         />
         <datalist id="city-history">
           {history.map((city, index) => (
@@ -117,7 +112,12 @@ const Home = () => {
         </button>
       </div>
 
-      {loading && <p>{lang === "ne" ? "लोड हुँदैछ..." : "Loading weather..."}</p>}
+      {loading && (
+        <div style={{ textAlign: "center", marginTop: "30px" }}>
+          <ClipLoader size={50} color="#1a73e8" />
+          <p>{lang === "ne" ? "लोड हुँदैछ..." : "Loading weather..."}</p>
+        </div>
+      )}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {weather && (

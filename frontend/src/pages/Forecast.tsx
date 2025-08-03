@@ -10,6 +10,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { useLanguage } from "../context/LanguageContext";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const getDailyAverageData = (data: any[]) => {
   const dailyMap: { [date: string]: { temps: number[]; humidities: number[] } } = {};
@@ -172,7 +173,12 @@ const Forecast = () => {
         </div>
       </div>
 
-      {loading && <p>{lang === "ne" ? "लोड हुँदैछ..." : "Loading forecast..."}</p>}
+      {loading && (
+        <div style={{ textAlign: "center", marginTop: "30px" }}>
+        <ClipLoader size={50} color="#1a73e8" />
+        <p>{lang === "ne" ? "लोड हुँदैछ..." : "Loading forecast..."}</p>
+        </div>
+        )}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {forecastData.length > 0 && (
