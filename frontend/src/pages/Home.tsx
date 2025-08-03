@@ -11,13 +11,17 @@ const Home = () => {
   const handleSearch = () => {
     const searchCity = inputValue.trim();
     if (searchCity) {
+      localStorage.setItem("kuhiro_last_city", searchCity); // 🔒 Save to localStorage
       setCity(searchCity);
     }
   };
 
   useEffect(() => {
-    // Geolocation on first load
-    if (!city) {
+    const savedCity = localStorage.getItem("kuhiro_last_city");
+
+    if (savedCity) {
+      setCity(savedCity);
+    } else {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
@@ -27,23 +31,19 @@ const Home = () => {
               `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${process.env.REACT_APP_WEATHER_KEY}`
             );
             const data = await res.json();
-            if (data && data[0] && data[0].name) {
-              setCity(data[0].name);
-            } else {
-              setCity("Kathmandu"); // fallback
-            }
+            const geoCity = data?.[0]?.name || "Kathmandu";
+            localStorage.setItem("kuhiro_last_city", geoCity); // 🔒 Save fallback city too
+            setCity(geoCity);
           } catch (err) {
-            console.error("Geolocation API error:", err);
             setCity("Kathmandu");
           }
         },
         () => {
-          // If user blocks location
           setCity("Kathmandu");
         }
       );
     }
-  }, [city]);
+  }, []);
 
   useEffect(() => {
     if (city) {
@@ -63,7 +63,7 @@ const Home = () => {
   return (
     <div style={{ maxWidth: "700px", margin: "auto", padding: "0 20px" }}>
       <h2 className="title">Welcome to Kuhiro ☁️</h2>
-      <p className="subtitle">Real-time weather based on your location.</p>
+      <p className="subtitle">Real-time weather based on your location or previous search.</p>
 
       <div style={{ marginTop: "20px" }}>
         <input

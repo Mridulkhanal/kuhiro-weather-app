@@ -10,10 +10,8 @@ import {
   CartesianGrid,
 } from "recharts";
 
-// Convert 3-hour forecast into daily average
 const getDailyAverageData = (data: any[]) => {
   const dailyMap: { [date: string]: { temps: number[]; humidities: number[] } } = {};
-
   data.forEach((item) => {
     const date = item.dt_txt.split(" ")[0];
     if (!dailyMap[date]) {
@@ -23,17 +21,13 @@ const getDailyAverageData = (data: any[]) => {
     dailyMap[date].humidities.push(item.main.humidity);
   });
 
-  return Object.keys(dailyMap).map((date) => {
-    const temps = dailyMap[date].temps;
-    const humidities = dailyMap[date].humidities;
-    return {
-      dt_txt: date,
-      main: {
-        temp: temps.reduce((a, b) => a + b, 0) / temps.length,
-        humidity: humidities.reduce((a, b) => a + b, 0) / humidities.length,
-      },
-    };
-  });
+  return Object.keys(dailyMap).map((date) => ({
+    dt_txt: date,
+    main: {
+      temp: dailyMap[date].temps.reduce((a, b) => a + b, 0) / dailyMap[date].temps.length,
+      humidity: dailyMap[date].humidities.reduce((a, b) => a + b, 0) / dailyMap[date].humidities.length,
+    },
+  }));
 };
 
 const Forecast = () => {
@@ -47,29 +41,29 @@ const Forecast = () => {
   const handleSearch = () => {
     const searchCity = inputValue.trim();
     if (searchCity) {
+      localStorage.setItem("kuhiro_last_city", searchCity);
       setCity(searchCity);
     }
   };
 
-  // 🌍 Auto-detect city on first load
   useEffect(() => {
-    if (!city) {
+    const savedCity = localStorage.getItem("kuhiro_last_city");
+
+    if (savedCity) {
+      setCity(savedCity);
+    } else {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-
           try {
             const res = await fetch(
               `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${process.env.REACT_APP_WEATHER_KEY}`
             );
             const data = await res.json();
-            if (data && data[0] && data[0].name) {
-              setCity(data[0].name);
-            } else {
-              setCity("Kathmandu");
-            }
+            const geoCity = data?.[0]?.name || "Kathmandu";
+            localStorage.setItem("kuhiro_last_city", geoCity);
+            setCity(geoCity);
           } catch (err) {
-            console.error("Geo lookup failed", err);
             setCity("Kathmandu");
           }
         },
@@ -78,9 +72,8 @@ const Forecast = () => {
         }
       );
     }
-  }, [city]);
+  }, []);
 
-  // 🌦️ Fetch forecast data when city changes
   useEffect(() => {
     if (city) {
       setLoading(true);
