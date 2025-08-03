@@ -10,7 +10,7 @@ import {
   CartesianGrid,
 } from "recharts";
 
-// Convert 3-hour data to daily average
+// Convert 3-hour forecast into daily average
 const getDailyAverageData = (data: any[]) => {
   const dailyMap: { [date: string]: { temps: number[]; humidities: number[] } } = {};
 
@@ -38,36 +38,70 @@ const getDailyAverageData = (data: any[]) => {
 
 const Forecast = () => {
   const [forecastData, setForecastData] = useState<any[]>([]);
-  const [city, setCity] = useState("Kathmandu");
+  const [city, setCity] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [viewMode, setViewMode] = useState<"hourly" | "daily">("hourly");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const handleSearch = () => {
+    const searchCity = inputValue.trim();
+    if (searchCity) {
+      setCity(searchCity);
+    }
+  };
+
+  // 🌍 Auto-detect city on first load
   useEffect(() => {
-    setLoading(true);
-    setError("");
-    fetchForecast(city).then((data) => {
-      setLoading(false);
-      if (data && data.list) {
-        setForecastData(data.list);
-      } else {
-        setError("Could not fetch forecast data. Please try again.");
-      }
-    });
+    if (!city) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const res = await fetch(
+              `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${process.env.REACT_APP_WEATHER_KEY}`
+            );
+            const data = await res.json();
+            if (data && data[0] && data[0].name) {
+              setCity(data[0].name);
+            } else {
+              setCity("Kathmandu");
+            }
+          } catch (err) {
+            console.error("Geo lookup failed", err);
+            setCity("Kathmandu");
+          }
+        },
+        () => {
+          setCity("Kathmandu");
+        }
+      );
+    }
   }, [city]);
 
-  const handleSearch = () => {
-    const searchCity = inputValue.trim() || "Kathmandu";
-    setCity(searchCity);
-  };
+  // 🌦️ Fetch forecast data when city changes
+  useEffect(() => {
+    if (city) {
+      setLoading(true);
+      setError("");
+      fetchForecast(city).then((data) => {
+        setLoading(false);
+        if (data && data.list) {
+          setForecastData(data.list);
+        } else {
+          setError("Could not fetch forecast data.");
+        }
+      });
+    }
+  }, [city]);
 
   const chartData =
     viewMode === "hourly" ? forecastData.slice(0, 8) : getDailyAverageData(forecastData);
 
   return (
     <div style={{ maxWidth: "1000px", margin: "auto", padding: "0 20px" }}>
-      <h2 className="title">Weather Forecast 🌦️</h2>
+      <h2 className="title">Forecast for {city || "..."}</h2>
 
       <div style={{ margin: "20px 0" }}>
         <input
@@ -94,7 +128,9 @@ const Forecast = () => {
         </button>
 
         <button
-          onClick={() => setViewMode((prev) => (prev === "hourly" ? "daily" : "hourly"))}
+          onClick={() =>
+            setViewMode((prev) => (prev === "hourly" ? "daily" : "hourly"))
+          }
           style={{
             padding: "8px 16px",
             marginLeft: "20px",
@@ -109,12 +145,11 @@ const Forecast = () => {
         </button>
       </div>
 
-      {loading && <p>Loading forecast data...</p>}
+      {loading && <p>Loading forecast...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {/* 🌡️ Temperature Chart */}
       <h3 style={{ marginTop: "40px" }}>
-        🌡️ Temperature Trend ({viewMode === "hourly" ? "Next 24 Hours" : "Next 5 Days"})
+        🌡️ Temperature ({viewMode === "hourly" ? "Next 24 Hours" : "Next 5 Days"})
       </h3>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData}>
@@ -122,18 +157,17 @@ const Forecast = () => {
           <XAxis dataKey="dt_txt" />
           <YAxis domain={["auto", "auto"]} />
           <Tooltip />
-          <Line type="monotone" dataKey="main.temp" stroke="#1a73e8" strokeWidth={2} />
+          <Line
+            type="monotone"
+            dataKey="main.temp"
+            stroke="#1a73e8"
+            strokeWidth={2}
+          />
         </LineChart>
       </ResponsiveContainer>
-      <ul style={{ fontSize: "0.9rem", marginTop: "10px", color: "#555" }}>
-        <li>🌡️ Shows temperature forecast in °C (hourly or averaged daily)</li>
-        <li>🔁 Toggle to see either detailed 3-hour data or a clean 5-day trend</li>
-        <li>📅 Great for travel planning, agriculture, or clothing choices</li>
-      </ul>
 
-      {/* 💧 Humidity Chart */}
       <h3 style={{ marginTop: "40px" }}>
-        💧 Humidity Trend ({viewMode === "hourly" ? "Next 24 Hours" : "Next 5 Days"})
+        💧 Humidity ({viewMode === "hourly" ? "Next 24 Hours" : "Next 5 Days"})
       </h3>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData}>
@@ -141,14 +175,14 @@ const Forecast = () => {
           <XAxis dataKey="dt_txt" />
           <YAxis domain={["auto", "auto"]} />
           <Tooltip />
-          <Line type="monotone" dataKey="main.humidity" stroke="#00b894" strokeWidth={2} />
+          <Line
+            type="monotone"
+            dataKey="main.humidity"
+            stroke="#00b894"
+            strokeWidth={2}
+          />
         </LineChart>
       </ResponsiveContainer>
-      <ul style={{ fontSize: "0.9rem", marginTop: "10px", color: "#555" }}>
-        <li>💧 Humidity levels in % to understand air moisture</li>
-        <li>🌿 Helpful for allergies, agriculture, or comfort planning</li>
-        <li>🔁 Switch between detailed hourly view or daily average</li>
-      </ul>
     </div>
   );
 };
