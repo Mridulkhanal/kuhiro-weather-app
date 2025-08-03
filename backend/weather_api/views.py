@@ -1,39 +1,39 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 import requests
-import os
+from django.http import JsonResponse
+from django.conf import settings
 
-@api_view(['GET'])
+OPENWEATHERMAP_API_KEY = settings.OPENWEATHERMAP_API_KEY
+
+
 def current_weather(request):
-    city = request.GET.get('city', 'Kathmandu')  # Default city
-    api_key = os.getenv("OPENWEATHERMAP_API_KEY")
+    city = request.GET.get("city", "Kathmandu")
+    unit = request.GET.get("unit", "metric")  # NEW
 
-    if not api_key:
-        return Response({"error": "API key not found"}, status=500)
+    url = (
+        f"https://api.openweathermap.org/data/2.5/weather?"
+        f"q={city}&appid={OPENWEATHERMAP_API_KEY}&units={unit}"
+    )
 
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-    
     try:
         response = requests.get(url)
-        data = response.json()
-        return Response(data)
-    except Exception as e:
-        return Response({"error": str(e)}, status=500)
+        response.raise_for_status()
+        return JsonResponse(response.json())
+    except requests.RequestException as e:
+        return JsonResponse({"error": "Failed to fetch weather data"}, status=500)
 
 
-@api_view(['GET'])
 def forecast_weather(request):
-    city = request.GET.get('city', 'Kathmandu')
-    api_key = os.getenv("OPENWEATHERMAP_API_KEY")
+    city = request.GET.get("city", "Kathmandu")
+    unit = request.GET.get("unit", "metric")  # NEW
 
-    if not api_key:
-        return Response({"error": "API key not found"}, status=500)
-
-    url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}&units=metric"
+    url = (
+        f"https://api.openweathermap.org/data/2.5/forecast?"
+        f"q={city}&appid={OPENWEATHERMAP_API_KEY}&units={unit}"
+    )
 
     try:
         response = requests.get(url)
-        data = response.json()
-        return Response(data)
-    except Exception as e:
-        return Response({"error": str(e)}, status=500)
+        response.raise_for_status()
+        return JsonResponse(response.json())
+    except requests.RequestException as e:
+        return JsonResponse({"error": "Failed to fetch forecast data"}, status=500)
