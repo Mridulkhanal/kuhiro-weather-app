@@ -102,6 +102,11 @@ const Home = () => {
           <p>💧 Humidity: {weather.main.humidity}%</p>
           <p>🌬️ Wind: {weather.wind.speed} m/s</p>
           <p>⛅ Condition: {weather.weather[0].description}</p>
+          {weather._cached && (
+            <p style={{ color: "orange", fontSize: "0.85rem" }}>
+              ⚠️ Data loaded from cache. Last updated at {new Date(weather._updated).toLocaleString()}
+            </p>
+          )}
         </div>
       )}
     </div>
