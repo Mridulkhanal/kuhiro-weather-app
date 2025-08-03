@@ -56,3 +56,23 @@ body.dark .dark-toggle {
   background-color: #444;
   color: white;
 }
+
+.toggle-group {
+  display: flex;
+  gap: 10px;
+}
+
+.unit-toggle {
+  padding: 6px 12px;
+  background-color: white;
+  color: #4a90e2;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+body.dark .unit-toggle {
+  background-color: #444;
+  color: white;
+}

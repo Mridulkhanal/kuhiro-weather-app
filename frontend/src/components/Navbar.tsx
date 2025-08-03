@@ -7,6 +7,10 @@ const Navbar = () => {
     return localStorage.getItem("kuhiro_dark_mode") === "true";
   });
 
+  const [unit, setUnit] = useState<"metric" | "imperial">(() => {
+    return (localStorage.getItem("kuhiro_unit") as "metric" | "imperial") || "metric";
+  });
+
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add("dark");
@@ -15,6 +19,11 @@ const Navbar = () => {
     }
     localStorage.setItem("kuhiro_dark_mode", String(darkMode));
   }, [darkMode]);
+
+  useEffect(() => {
+    localStorage.setItem("kuhiro_unit", unit);
+    // Optionally: Reload page or notify components (see below for logic)
+  }, [unit]);
 
   return (
     <nav className="navbar">
@@ -25,9 +34,18 @@ const Navbar = () => {
         <li><Link to="/forecast">Forecast</Link></li>
       </ul>
 
-      <button className="dark-toggle" onClick={() => setDarkMode(prev => !prev)}>
-        {darkMode ? "☀️ Light" : "🌙 Dark"}
-      </button>
+      <div className="toggle-group">
+        <button className="dark-toggle" onClick={() => setDarkMode(prev => !prev)}>
+          {darkMode ? "☀️ Light" : "🌙 Dark"}
+        </button>
+
+        <button
+          className="unit-toggle"
+          onClick={() => setUnit(prev => (prev === "metric" ? "imperial" : "metric"))}
+        >
+          {unit === "metric" ? "°C" : "°F"}
+        </button>
+      </div>
     </nav>
   );
 };
