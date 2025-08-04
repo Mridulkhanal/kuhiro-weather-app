@@ -38,9 +38,23 @@ export async function fetchForecast(city: string) {
     const response = await fetch(`${API_URL}/api/forecast/?city=${city}&unit=${unit}`);
     if (!response.ok) throw new Error("Failed to fetch forecast");
     const data = await response.json();
-    const cache = { data, timestamp: new Date().toISOString() };
+
+    // Group forecast by date (YYYY-MM-DD)
+    const grouped: Record<string, any[]> = {};
+    data.list.forEach((item: any) => {
+      const date = item.dt_txt.split(" ")[0];
+      if (!grouped[date]) grouped[date] = [];
+      grouped[date].push(item);
+    });
+
+    const finalData = {
+      city: data.city,
+      grouped,
+    };
+
+    const cache = { data: finalData, timestamp: new Date().toISOString() };
     localStorage.setItem(cacheKey, JSON.stringify(cache));
-    return { ...data, _cached: false, _updated: cache.timestamp };
+    return { ...finalData, _cached: false, _updated: cache.timestamp };
   } catch (error) {
     console.warn("Using cached forecast:", error);
     const cached = localStorage.getItem(cacheKey);
