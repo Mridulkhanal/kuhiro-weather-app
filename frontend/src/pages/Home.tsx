@@ -4,6 +4,27 @@ import { useLanguage } from "../context/LanguageContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import WeatherIcon from "../components/WeatherIcon";
 
+// 🧠 Tip generator
+const getWeatherTip = (condition: string, lang: string): string => {
+  const lower = condition.toLowerCase();
+
+  if (lang === "ne") {
+    if (lower.includes("rain")) return "☔ वर्षा भइरहेको छ, छाता ल्याउन नबिर्सनुहोस्!";
+    if (lower.includes("snow")) return "❄️ हिउँ परिरहेको छ, न्यानो लुगा लगाउनुहोस्!";
+    if (lower.includes("clear")) return "😎 मौसम सफा छ, बाहिर घुम्न जान सकिन्छ!";
+    if (lower.includes("cloud")) return "⛅ बादल लागेको छ, आरामदायी मौसम!";
+    if (lower.includes("storm")) return "⚡ आँधी सम्भावना छ, सतर्क रहनुहोस्!";
+    return "ℹ️ मौसम हेरेर योजना बनाउनुहोस्।";
+  } else {
+    if (lower.includes("rain")) return "☔ It's rainy — carry an umbrella!";
+    if (lower.includes("snow")) return "❄️ Snowy — stay warm and safe!";
+    if (lower.includes("clear")) return "😎 Clear skies — great day for a walk!";
+    if (lower.includes("cloud")) return "⛅ Cloudy — enjoy the cool weather!";
+    if (lower.includes("storm")) return "⚡ Stormy — stay indoors if possible!";
+    return "ℹ️ Plan your day based on the weather.";
+  }
+};
+
 const Home = () => {
   const [weather, setWeather] = useState<any>(null);
   const [city, setCity] = useState("");
@@ -71,7 +92,6 @@ const Home = () => {
         }
       });
 
-      // fetch forecast for tomorrow summary
       fetchForecast(city).then((forecastData) => {
         if (forecastData && forecastData.list?.length > 0) {
           const now = new Date();
@@ -162,6 +182,10 @@ const Home = () => {
               </strong>
             </p>
           )}
+
+          <p style={{ marginTop: "10px", fontStyle: "italic", color: "#444" }}>
+            {getWeatherTip(weather.weather[0].main, lang)}
+          </p>
 
           {weather._cached && (
             <p style={{ color: "orange", fontSize: "0.85rem" }}>
