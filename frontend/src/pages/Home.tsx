@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchWeather } from "../weatherService";
+import { fetchWeather, fetchForecast } from "../weatherService";
 import { useLanguage } from "../context/LanguageContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import WeatherIcon from "../components/WeatherIcon";
@@ -11,6 +11,7 @@ const Home = () => {
   const [history, setHistory] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [tomorrowForecast, setTomorrowForecast] = useState<{ max: number; min: number } | null>(null);
 
   const { lang } = useLanguage();
   const unit = localStorage.getItem("kuhiro_unit") === "imperial" ? "imperial" : "metric";
@@ -67,6 +68,27 @@ const Home = () => {
           setWeather(data);
         } else {
           setError(lang === "ne" ? "मौसम जानकारी लोड गर्न सकिएन।" : "Failed to load weather data.");
+        }
+      });
+
+      // fetch forecast for tomorrow summary
+      fetchForecast(city).then((forecastData) => {
+        if (forecastData && forecastData.list?.length > 0) {
+          const now = new Date();
+          const tomorrow = new Date();
+          tomorrow.setDate(now.getDate() + 1);
+          const tomorrowDate = tomorrow.toISOString().split("T")[0];
+
+          const tomorrowItems = forecastData.list.filter((item: any) =>
+            item.dt_txt.startsWith(tomorrowDate)
+          );
+
+          if (tomorrowItems.length > 0) {
+            const temps = tomorrowItems.map((item: any) => item.main.temp);
+            const max = Math.max(...temps);
+            const min = Math.min(...temps);
+            setTomorrowForecast({ max, min });
+          }
         }
       });
     }
@@ -131,6 +153,15 @@ const Home = () => {
           <p>💧 {lang === "ne" ? "आर्द्रता" : "Humidity"}: {weather.main.humidity}%</p>
           <p>🌬️ {lang === "ne" ? "हावा" : "Wind"}: {weather.wind.speed} m/s</p>
           <p>⛅ {lang === "ne" ? "स्थिति" : "Condition"}: {weather.weather[0].description}</p>
+
+          {tomorrowForecast && (
+            <p style={{ marginTop: "10px" }}>
+              📅 {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow"}:{" "}
+              <strong>
+                {Math.round(tomorrowForecast.min)}{unitSymbol} / {Math.round(tomorrowForecast.max)}{unitSymbol}
+              </strong>
+            </p>
+          )}
 
           {weather._cached && (
             <p style={{ color: "orange", fontSize: "0.85rem" }}>
