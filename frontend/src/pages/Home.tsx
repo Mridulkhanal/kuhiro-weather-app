@@ -3,11 +3,10 @@ import { fetchWeather, fetchForecast } from "../weatherService";
 import { useLanguage } from "../context/LanguageContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import WeatherIcon from "../components/WeatherIcon";
+import WeatherMetrics from "../components/WeatherMetrics";
 
-// 🧠 Tip generator
 const getWeatherTip = (condition: string, lang: string): string => {
   const lower = condition.toLowerCase();
-
   if (lang === "ne") {
     if (lower.includes("rain")) return "☔ वर्षा भइरहेको छ, छाता ल्याउन नबिर्सनुहोस्!";
     if (lower.includes("snow")) return "❄️ हिउँ परिरहेको छ, न्यानो लुगा लगाउनुहोस्!";
@@ -83,6 +82,7 @@ const Home = () => {
     if (city) {
       setLoading(true);
       setError("");
+
       fetchWeather(city).then((data) => {
         setLoading(false);
         if (data && data.main) {
@@ -116,7 +116,7 @@ const Home = () => {
 
   return (
     <div style={{ maxWidth: "700px", margin: "auto", padding: "0 20px" }}>
-      <h2 className="title">{lang === "ne" ? "Kuhiro मा स्वागत छ ☁️" : "Welcome to Kuhiro ☁️"}</h2>
+      <h2 className="title">{lang === "ne" ? `Kuhiro मा स्वागत छ ☁️` : `Welcome to Kuhiro ☁️`}</h2>
       <p className="subtitle">
         {lang === "ne"
           ? "तपाईंको स्थान अनुसार रियल-टाइम मौसम जानकारी।"
@@ -164,35 +164,34 @@ const Home = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {weather && (
-        <div style={{ marginTop: "40px" }}>
-          <h3>
-            {lang === "ne" ? "मौसम:" : "Weather in"} {weather.name}
+        <div style={{ marginTop: "30px" }}>
+          <h3 style={{ textAlign: "center" }}>
+            {lang === "ne" ? `${weather.name} को मौसम` : `Weather in ${weather.name}`}
           </h3>
-          <WeatherIcon condition={weather.weather[0].main} />
-          <p>🌡️ {lang === "ne" ? "तापक्रम" : "Temperature"}: {weather.main.temp}{unitSymbol}</p>
-          <p>💧 {lang === "ne" ? "आर्द्रता" : "Humidity"}: {weather.main.humidity}%</p>
-          <p>🌬️ {lang === "ne" ? "हावा" : "Wind"}: {weather.wind.speed} m/s</p>
-          <p>⛅ {lang === "ne" ? "स्थिति" : "Condition"}: {weather.weather[0].description}</p>
-
-          {tomorrowForecast && (
-            <p style={{ marginTop: "10px" }}>
-              📅 {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow"}:{" "}
-              <strong>
-                {Math.round(tomorrowForecast.min)}{unitSymbol} / {Math.round(tomorrowForecast.max)}{unitSymbol}
-              </strong>
-            </p>
-          )}
-
-          <p style={{ marginTop: "10px", fontStyle: "italic", color: "#444" }}>
-            {getWeatherTip(weather.weather[0].main, lang)}
-          </p>
-
-          {weather._cached && (
-            <p style={{ color: "orange", fontSize: "0.85rem" }}>
-              ⚠️ {lang === "ne" ? "क्यास गरिएको डाटा" : "Cached data"} –{" "}
-              {new Date(weather._updated).toLocaleString()}
-            </p>
-          )}
+          <div className="weather-panel" style={{ display: "flex", gap: "40px" }}>
+            <div className="weather-left" style={{ flex: 1, textAlign: "center" }}>
+              <WeatherIcon condition={weather.weather[0].main} />
+              <p style={{ textTransform: "capitalize" }}>{weather.weather[0].description}</p>
+              {tomorrowForecast && (
+                <p>
+                  📅 {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow Forecast"}: {Math.round(tomorrowForecast.min)}{unitSymbol} / {Math.round(tomorrowForecast.max)}{unitSymbol}
+                </p>
+              )}
+              <div style={{ marginTop: "20px" }}>
+                <p style={{ fontStyle: "italic", color: "#444" }}>
+                  {getWeatherTip(weather.weather[0].main, lang)}
+                </p>
+                {weather._cached && (
+                  <p style={{ color: "orange", fontSize: "0.85rem" }}>
+                    ⚠️ {lang === "ne" ? "क्यास गरिएको डाटा" : "Cached data"} – {new Date(weather._updated).toLocaleString()}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="weather-right" style={{ flex: 2 }}>
+              <WeatherMetrics data={weather} unit={unit} exclude={["wind_gust", "dew_point"]} />
+            </div>
+          </div>
         </div>
       )}
     </div>

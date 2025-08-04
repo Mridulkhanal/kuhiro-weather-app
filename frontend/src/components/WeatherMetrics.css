@@ -1,0 +1,30 @@
+.weather-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.metric {
+  background-color: #f5f8ff;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.metric .icon {
+  font-size: 1.2rem;
+}
+
+.metric .label {
+  font-weight: 500;
+}
+
+.metric .value {
+  margin-left: auto;
+  font-weight: bold;
+}
