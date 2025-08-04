@@ -56,3 +56,8 @@
     background-color: #2e2e2e;
   }
 }
+
+.forecast-table th:first-child,
+.forecast-table td:first-child {
+  border-left: none;
+}   
