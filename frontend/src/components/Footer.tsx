@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="footer">
       <p>© {new Date().getFullYear()} Kuhiro • Real-Time Weather App</p>
-      <p>Made with ☁️ by Mridul Khanal</p>
+      <p>Made by Mridul Khanal</p>
     </footer>
   );
 };

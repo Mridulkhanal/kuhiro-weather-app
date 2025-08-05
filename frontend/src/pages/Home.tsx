@@ -4,7 +4,6 @@ import { useLanguage } from "../context/LanguageContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import WeatherIcon from "../components/WeatherIcon";
 import WeatherMetrics from "../components/WeatherMetrics";
-import Footer from "../components/Footer";
 
 const getWeatherTip = (condition: string, lang: string): string => {
   const lower = condition.toLowerCase();
@@ -194,7 +193,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      )}<Footer />
+      )}
     </div>
   );
 };

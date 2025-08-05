@@ -1,13 +1,27 @@
 .footer {
+  background-color: #4a90e2;
+  color: white;
+  padding: 15px 20px;
   text-align: center;
-  padding: 15px 10px;
+  font-size: 0.95rem;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 40px;
-  font-size: 0.9rem;
-  background-color: var(--footer-bg, #f0f4fa);
-  color: var(--footer-text, #333);
 }
 
+.footer p {
+  margin: 4px 0;
+}
+
+/* Dark Mode */
 body.dark .footer {
-  background-color: #121a24;
-  color: #ccc;
+  background-color: #1f1f1f;
+  color: #f0f0f0;
+}
+
+@media (max-width: 600px) {
+  .footer {
+    font-size: 0.85rem;
+    padding: 12px 15px;
+  }
 }
