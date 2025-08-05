@@ -1,0 +1,13 @@
+.footer {
+  text-align: center;
+  padding: 15px 10px;
+  margin-top: 40px;
+  font-size: 0.9rem;
+  background-color: var(--footer-bg, #f0f4fa);
+  color: var(--footer-text, #333);
+}
+
+body.dark .footer {
+  background-color: #121a24;
+  color: #ccc;
+}

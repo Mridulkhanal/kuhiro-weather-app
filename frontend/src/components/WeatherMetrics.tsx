@@ -21,6 +21,12 @@ const WeatherMetrics: React.FC<WeatherMetricsProps> = ({
 
   const metrics = [
     {
+      label: "Current Temp",
+      value: `${data.main.temp}${unitSymbol}`,
+      icon: "🌡️",
+      key: "temp",
+    },
+    {
       label: "Humidity",
       value: `${data.main.humidity}%`,
       icon: "💧",
