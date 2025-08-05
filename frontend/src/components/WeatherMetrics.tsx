@@ -5,10 +5,27 @@ interface WeatherMetricsProps {
   data: any;
   unit: string;
   exclude?: string[];
+  tomorrowForecast?: {
+    min: number;
+    max: number;
+  } | null;
 }
 
-const WeatherMetrics: React.FC<WeatherMetricsProps> = ({ data, unit, exclude = [] }) => {
+const WeatherMetrics: React.FC<WeatherMetricsProps> = ({
+  data,
+  unit,
+  exclude = [],
+  tomorrowForecast,
+}) => {
+  const unitSymbol = unit === "imperial" ? "°F" : "°C";
+
   const metrics = [
+    {
+      label: "Current Temp",
+      value: `${data.main.temp}${unitSymbol}`,
+      icon: "🌡️",
+      key: "temp",
+    },
     {
       label: "Humidity",
       value: `${data.main.humidity}%`,
@@ -29,7 +46,7 @@ const WeatherMetrics: React.FC<WeatherMetricsProps> = ({ data, unit, exclude = [
     },
     {
       label: "Visibility",
-      value: `${data.visibility / 1000} km`,
+      value: `${(data.visibility / 1000).toFixed(1)} km`,
       icon: "📈",
       key: "visibility",
     },
@@ -64,6 +81,16 @@ const WeatherMetrics: React.FC<WeatherMetricsProps> = ({ data, unit, exclude = [
             <span className="value">{metric.value}</span>
           </div>
         ))}
+
+      {tomorrowForecast && (
+        <div className="metric" key="tomorrow_forecast">
+          <span className="icon">📅</span>
+          <span className="label">Tomorrow:</span>
+          <span className="value">
+            {Math.round(tomorrowForecast.min)}{unitSymbol} / {Math.round(tomorrowForecast.max)}{unitSymbol}
+          </span>
+        </div>
+      )}
     </div>
   );
 };
