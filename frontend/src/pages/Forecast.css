@@ -1,0 +1,39 @@
+.forecast-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+.city-input {
+  padding: 8px;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.search-button {
+  padding: 8px 12px;
+  margin-top: 10px;
+  font-size: 1rem;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cache-warning {
+  font-size: 0.85rem;
+  color: orange;
+  margin-top: 10px;
+}
+
+/* Dark Mode Support */
+body.dark .forecast-container {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+body.dark .search-button {
+  background-color: #3c8ddf;
+  color: #fff;
+}
