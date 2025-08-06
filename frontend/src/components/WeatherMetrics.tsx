@@ -21,6 +21,12 @@ const WeatherMetrics: React.FC<WeatherMetricsProps> = ({
 
   const metrics = [
     {
+      label: "Current Temp",
+      value: `${data.main.temp}${unitSymbol}`,
+      icon: "🌡️",
+      key: "temp",
+    },
+    {
       label: "Humidity",
       value: `${data.main.humidity}%`,
       icon: "💧",
@@ -40,7 +46,7 @@ const WeatherMetrics: React.FC<WeatherMetricsProps> = ({
     },
     {
       label: "Visibility",
-      value: `${data.visibility / 1000} km`,
+      value: `${(data.visibility / 1000).toFixed(1)} km`,
       icon: "📈",
       key: "visibility",
     },
@@ -49,6 +55,18 @@ const WeatherMetrics: React.FC<WeatherMetricsProps> = ({
       value: `95% (Extremely Humid)`,
       icon: "💥",
       key: "indoor_humidity",
+    },
+    {
+      label: "Sunrise",
+      value: new Date(data.sys.sunrise * 1000).toLocaleTimeString(),
+      icon: "🌅",
+      key: "sunrise",
+    },
+    {
+      label: "Sunset",
+      value: new Date(data.sys.sunset * 1000).toLocaleTimeString(),
+      icon: "🌇",
+      key: "sunset",
     },
   ];
 

@@ -123,37 +123,55 @@ const Home = () => {
           : "Real-time weather based on your location."}
       </p>
 
-      <div style={{ position: "relative", marginTop: "20px" }}>
-        <input
-          type="text"
-          placeholder={lang === "ne" ? "सहर टाइप गर्नुहोस्..." : "Enter city..."}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          list="city-history"
-          style={{ padding: "8px", fontSize: "1rem", width: "100%" }}
-        />
-        <datalist id="city-history">
-          {history.map((city, index) => (
-            <option value={city} key={index} />
-          ))}
-        </datalist>
+      <div
+  style={{
+    position: "relative",
+    marginTop: "20px",
+  }}
+>
+  <label htmlFor="city-search" style={{ fontWeight: "bold", display: "block", marginBottom: "6px" }}>
+    {lang === "ne" ? "सहर खोज्नुहोस्:" : "Search City:"}
+  </label>
+  <input
+    id="city-search"
+    type="text"
+    placeholder={lang === "ne" ? "सहर टाइप गर्नुहोस्..." : "Enter city..."}
+    value={inputValue}
+    onChange={(e) => setInputValue(e.target.value)}
+    list="city-history"
+    aria-label="City Search"
+    style={{
+      padding: "8px",
+      fontSize: "1rem",
+      width: "100%",
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+    }}
+  />
+  <datalist id="city-history">
+    {history.map((city, index) => (
+      <option value={city} key={index} />
+    ))}
+  </datalist>
 
-        <button
-          onClick={handleSearch}
-          style={{
-            padding: "8px 12px",
-            marginTop: "10px",
-            fontSize: "1rem",
-            backgroundColor: "#1a73e8",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          {lang === "ne" ? "खोज्नुहोस्" : "Search"}
-        </button>
-      </div>
+  <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+    <button
+      onClick={handleSearch}
+      aria-label="Search city button"
+      style={{
+        padding: "8px 12px",
+        fontSize: "1rem",
+        backgroundColor: "#1a73e8",
+        color: "white",
+        border: "none",
+        borderRadius: "5px",
+        cursor: "pointer",
+      }}
+    >
+      {lang === "ne" ? "खोज्नुहोस्" : "Search"}
+    </button>
+  </div>
+</div>
 
       {loading && (
         <div style={{ textAlign: "center", marginTop: "30px" }}>
@@ -189,7 +207,7 @@ const Home = () => {
               </div>
             </div>
             <div className="weather-right" style={{ flex: 2 }}>
-              <WeatherMetrics data={weather} unit={unit} exclude={["wind_gust", "dew_point"]} tomorrowForecast={tomorrowForecast} />
+              <WeatherMetrics data={weather} unit={unit} exclude={["wind_gust", "dew_point"]} />
             </div>
           </div>
         </div>

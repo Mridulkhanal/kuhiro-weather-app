@@ -3,6 +3,7 @@ import { fetchForecast } from "../weatherService";
 import { useLanguage } from "../context/LanguageContext";
 import ForecastTable from "../components/ForecastTable";
 import ClipLoader from "react-spinners/ClipLoader";
+import "./Forecast.css";
 
 const Forecast = () => {
   const [forecastData, setForecastData] = useState<any>(null);
@@ -77,7 +78,7 @@ const Forecast = () => {
   }, [city, lang]);
 
   return (
-    <div style={{ maxWidth: "1000px", margin: "auto", padding: "0 20px" }}>
+    <div className="forecast-container">
       <h2 className="title">
         {lang === "ne" ? "पूर्वानुमान" : "Forecast"}: {city}
       </h2>
@@ -89,7 +90,7 @@ const Forecast = () => {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           list="city-history"
-          style={{ padding: "8px", fontSize: "1rem", width: "100%" }}
+          className="city-input"
         />
         <datalist id="city-history">
           {history.map((city, index) => (
@@ -97,19 +98,7 @@ const Forecast = () => {
           ))}
         </datalist>
 
-        <button
-          onClick={handleSearch}
-          style={{
-            padding: "8px 12px",
-            marginTop: "10px",
-            fontSize: "1rem",
-            backgroundColor: "#1a73e8",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
+        <button onClick={handleSearch} className="search-button">
           {lang === "ne" ? "खोज्नुहोस्" : "Search"}
         </button>
       </div>
@@ -128,7 +117,7 @@ const Forecast = () => {
           <ForecastTable data={forecastData.grouped} unitSymbol={unitSymbol} />
 
           {forecastData._cached && (
-            <p style={{ fontSize: "0.85rem", color: "orange", marginTop: "10px" }}>
+            <p className="cache-warning">
               ⚠️ {lang === "ne" ? "क्यास गरिएको डाटा" : "Cached data"} –{" "}
               {new Date(forecastData._updated).toLocaleString()}
             </p>

@@ -19,3 +19,28 @@ body {
   font-size: 1.2rem;
   color: #555;
 }
+
+:focus-visible {
+  outline: 3px dashed #4a90e2;
+  outline-offset: 3px;
+}
+
+input:focus,
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.5);
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  .weather-panel {
+    flex-direction: column;
+  }
+
+  .weather-right {
+    margin-top: 20px;
+  }
+}
