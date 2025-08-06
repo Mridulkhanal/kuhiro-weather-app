@@ -4,6 +4,7 @@ import Forecast from "./pages/Forecast";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { LanguageProvider } from "./context/LanguageContext"; 
+import WeatherMap from "./pages/WeatherMap";
 import "./index.css";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/forecast" element={<Forecast />} />
+            <Route path="/map" element={<WeatherMap />} />
           </Routes>
         </div>
         <Footer />
