@@ -85,12 +85,15 @@ const Forecast = () => {
 
       <div style={{ position: "relative", margin: "20px 0" }}>
         <input
+          id="city-search"
           type="text"
+          name="city"
           placeholder={lang === "ne" ? "सहर टाइप गर्नुहोस्..." : "Enter city..."}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           list="city-history"
           className="city-input"
+          aria-label="City Search"
         />
         <datalist id="city-history">
           {history.map((city, index) => (
