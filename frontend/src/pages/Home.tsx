@@ -182,35 +182,47 @@ const Home = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {weather && (
-        <div style={{ marginTop: "30px" }}>
-          <h3 style={{ textAlign: "center" }}>
-            {lang === "ne" ? `${weather.name} को मौसम` : `Weather in ${weather.name}`}
-          </h3>
-          <div className="weather-panel" style={{ display: "flex", gap: "40px" }}>
-            <div className="weather-left" style={{ flex: 1, textAlign: "center" }}>
-              <WeatherIcon condition={weather.weather[0].main} />
-              <p style={{ textTransform: "capitalize" }}>{weather.weather[0].description}</p>
-              {tomorrowForecast && (
-                <p>
-                  📅 {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow Forecast"}: {Math.round(tomorrowForecast.min)}{unitSymbol} / {Math.round(tomorrowForecast.max)}{unitSymbol}
-                </p>
-              )}
-              <div style={{ marginTop: "20px" }}>
-                <p style={{ fontStyle: "italic", color: "#444" }}>
-                  {getWeatherTip(weather.weather[0].main, lang)}
-                </p>
-                {weather._cached && (
-                  <p style={{ color: "orange", fontSize: "0.85rem" }}>
-                    ⚠️ {lang === "ne" ? "क्यास गरिएको डाटा" : "Cached data"} – {new Date(weather._updated).toLocaleString()}
-                  </p>
-                )}
+        (() => {
+          // Determine if it's day or night based on current time and sunrise/sunset from weather data
+          let isDayTime = true;
+          if (weather.sys?.sunrise && weather.sys?.sunset && weather.dt) {
+            const nowUTC = weather.dt;
+            isDayTime = nowUTC >= weather.sys.sunrise && nowUTC < weather.sys.sunset;
+          }
+          
+          return (
+            <div style={{ marginTop: "30px" }}>
+              <h3 style={{ textAlign: "center" }}>
+                {lang === "ne" ? `${weather.name} को मौसम` : `Weather in ${weather.name}`}
+              </h3>
+              <div className="weather-panel" style={{ display: "flex", gap: "40px" }}>
+                <div className="weather-left" style={{ flex: 1, textAlign: "center" }}>
+                  <WeatherIcon condition={weather.weather[0].main} isDayTime={isDayTime} />
+                  <p style={{ textTransform: "capitalize" }}>{weather.weather[0].description}</p>
+                  {tomorrowForecast && (
+                    <p>
+                      📅 {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow Forecast"}: {Math.round(tomorrowForecast.min)}{unitSymbol} / {Math.round(tomorrowForecast.max)}{unitSymbol}
+                    </p>
+                  )}
+                  
+                  <div style={{ marginTop: "20px" }}>
+                    <p style={{ fontStyle: "italic", color: "#444" }}>
+                      {getWeatherTip(weather.weather[0].main, lang)}
+                    </p>
+                    {weather._cached && (
+                      <p style={{ color: "orange", fontSize: "0.85rem" }}>
+                        ⚠️ {lang === "ne" ? "क्यास गरिएको डाटा" : "Cached data"} – {new Date(weather._updated).toLocaleString()}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="weather-right" style={{ flex: 2 }}>
+                  <WeatherMetrics data={weather} unit={unit} exclude={["wind_gust", "dew_point"]} />
+                </div>
               </div>
             </div>
-            <div className="weather-right" style={{ flex: 2 }}>
-              <WeatherMetrics data={weather} unit={unit} exclude={["wind_gust", "dew_point"]} />
-            </div>
-          </div>
-        </div>
+          );
+        })()
       )}
     </div>
   );
