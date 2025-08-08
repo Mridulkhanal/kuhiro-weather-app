@@ -2,8 +2,24 @@ import requests
 from django.http import JsonResponse
 from django.conf import settings
 from rest_framework import generics
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from .models import Feedback
 from .serializers import FeedbackSerializer
+
+class FeedbackView(APIView):
+    def get(self, request):
+        feedbacks = Feedback.objects.all().order_by("-created_at")
+        serializer = FeedbackSerializer(feedbacks, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = FeedbackSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Feedback submitted successfully!"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class FeedbackListCreateAPIView(generics.ListCreateAPIView):
     queryset = Feedback.objects.order_by('-submitted_at')
