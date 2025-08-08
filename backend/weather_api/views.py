@@ -1,6 +1,13 @@
 import requests
 from django.http import JsonResponse
 from django.conf import settings
+from rest_framework import generics
+from .models import Feedback
+from .serializers import FeedbackSerializer
+
+class FeedbackListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Feedback.objects.order_by('-submitted_at')
+    serializer_class = FeedbackSerializer
 
 OPENWEATHERMAP_API_KEY = settings.OPENWEATHERMAP_API_KEY
 
