@@ -23,9 +23,31 @@
 }
 
 .about-container h2 {
-  font-size: 1.5rem;
+  font-size: 2em;
   color: var(--primary-color);
   margin-bottom: 20px;
+}
+
+.about-container h3 {
+  font-size: 1.5em;
+  color: var(--primary-color);
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.about-container ul {
+  padding-left: 20px;
+  margin-bottom: 20px;
+}
+
+.about-container ul li {
+  margin-bottom: 10px;
+  color: var(--text-color);
+}
+
+.about-container a {
+  color: var(--accent-color);
+  text-decoration: none;
 }
 
 .about-container p {
@@ -101,6 +123,11 @@
   border-radius: 6px;
   background-color: var(--input-bg, #fff);
   color: var(--text-color, #000);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--placeholder-color, #aaa);
 }
 
 .form-group input:focus,
