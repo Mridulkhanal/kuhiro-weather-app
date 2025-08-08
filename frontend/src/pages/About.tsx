@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import "./About.css";
 
+interface Feedback {
+  id: number;
+  name: string;
+  email: string;
+  message: string;
+  created_at?: string;
+}
+
 const About = () => {
   const { lang } = useLanguage();
 
@@ -21,7 +29,7 @@ const About = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [feedbackList, setFeedbackList] = useState<any[]>([]);
+  const [feedbackList, setFeedbackList] = useState<Feedback[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -35,16 +43,15 @@ const About = () => {
     try {
       const res = await fetch("http://localhost:8000/api/feedback/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       if (res.ok) {
+        const newFeedback: Feedback = await res.json();
+        setFeedbackList((prev) => [newFeedback, ...prev]); // Add on top
         setToastMessage(lang === "ne" ? "प्रतिक्रिया पठाइयो!" : "Feedback submitted!");
         setFormData({ name: "", email: "", message: "" });
-        fetchFeedback(); // reload updated list
       } else {
         setToastMessage(lang === "ne" ? "त्रुटि भयो!" : "Something went wrong.");
       }
@@ -60,8 +67,11 @@ const About = () => {
     try {
       const res = await fetch("http://localhost:8000/api/feedback/");
       if (res.ok) {
-        const data = await res.json();
-        setFeedbackList(data);
+        const data: Feedback[] = await res.json();
+        const sorted = [...data].sort(
+          (a, b) => new Date(b.created_at || "").getTime() - new Date(a.created_at || "").getTime()
+        );
+        setFeedbackList(sorted);
       }
     } catch {
       console.warn("Failed to fetch feedback");
@@ -82,6 +92,7 @@ const About = () => {
           : "Kuhiro is a real-time weather forecast application that delivers weather updates based on your location."}
       </p>
 
+      {/* Features */}
       <h3 className="section-title">{lang === "ne" ? "विशेषताहरू" : "Features"}</h3>
       <ul className="features-list">
         <li>{lang === "ne" ? "रियल-टाइम मौसम अपडेट" : "Real-time Weather Updates"}</li>
@@ -89,6 +100,7 @@ const About = () => {
         <li>{lang === "ne" ? "उपयोगकर्ता-मित्रता" : "User-friendly Interface"}</li>
       </ul>
 
+      {/* Feedback Form */}
       <h3 className="section-title">{lang === "ne" ? "प्रतिक्रिया पठाउनुहोस्" : "Send Feedback"}</h3>
       <form className="feedback-form" onSubmit={handleSubmit}>
         <div className="form-group">
@@ -141,19 +153,21 @@ const About = () => {
         </div>
       )}
 
+      {/* Display Feedback */}
       <h3 className="section-title">{lang === "ne" ? "प्रयोगकर्ता प्रतिक्रिया" : "User Feedback"}</h3>
       {feedbackList.length === 0 ? (
         <p>{lang === "ne" ? "अहिलेसम्म प्रतिक्रिया छैन।" : "No feedback yet."}</p>
       ) : (
         <ul className="feedback-list">
-          {feedbackList.map((fb, idx) => (
-            <li key={idx} className="feedback-item">
-              <p><strong>{fb.name}</strong>: {fb.message}</p>
+          {feedbackList.map((fb) => (
+            <li key={fb.id} className="feedback-item">
+              <p><strong>{fb.name}</strong> ({fb.email}): {fb.message}</p>
             </li>
           ))}
         </ul>
       )}
 
+      {/* Contributors */}
       <h3 className="section-title">{lang === "ne" ? "योगदानकर्ताहरू" : "Contributors"}</h3>
       <ul className="contributors-list">
         {contributors.map((person, index) => (

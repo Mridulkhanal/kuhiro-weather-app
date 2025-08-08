@@ -10,7 +10,7 @@ from .serializers import FeedbackSerializer
 
 class FeedbackView(APIView):
     def get(self, request):
-        feedbacks = Feedback.objects.all().order_by("-created_at")
+        feedbacks = Feedback.objects.all().order_by("-submitted_at")
         serializer = FeedbackSerializer(feedbacks, many=True)
         return Response(serializer.data)
 
