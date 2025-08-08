@@ -49,6 +49,24 @@ const About = () => {
           ? "हामी निरन्तर रुपमा Kuhiro लाई अझ प्रभावकारी र प्रयोगमैत्री बनाउन सुधार गर्दैछौं।"
           : "We are constantly improving Kuhiro to make it more efficient and user-friendly."}
       </p>
+      <h3 className="section-title">{lang === "ne" ? "प्रतिक्रिया पठाउनुहोस्" : "Send Feedback"}</h3>
+    <form className="feedback-form" onSubmit={(e) => e.preventDefault()}>
+     <div className="form-group">
+    <label htmlFor="name">{lang === "ne" ? "नाम" : "Name"}</label>
+    <input type="text" id="name" name="name" placeholder={lang === "ne" ? "तपाईंको नाम" : "Your name"} required />
+    </div>
+    <div className="form-group">
+    <label htmlFor="email">{lang === "ne" ? "इमेल" : "Email"}</label>
+    <input type="email" id="email" name="email" placeholder="example@email.com" required />
+     </div>
+     <div className="form-group">
+    <label htmlFor="message">{lang === "ne" ? "सन्देश" : "Message"}</label>
+    <textarea id="message" name="message" rows={4} placeholder={lang === "ne" ? "तपाईंको सन्देश..." : "Your message..."} required />
+    </div>
+    <button type="submit" className="submit-button">
+    {lang === "ne" ? "पठाउनुहोस्" : "Send"}
+     </button>
+    </form>
 
         <h3 className="section-title">{lang === "ne" ? "प्रयोगकर्ता प्रतिक्रिया" : "User Feedback"}</h3>
         <p>
