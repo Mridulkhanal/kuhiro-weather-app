@@ -8,11 +8,11 @@ import WeatherMetrics from "../components/WeatherMetrics";
 const getWeatherTip = (condition: string, lang: string): string => {
   const lower = condition.toLowerCase();
   if (lang === "ne") {
-    if (lower.includes("rain")) return "☔ वर्षा भइरहेको छ, छाता ल्याउन नबिर्सनुहोस्!";
+    if (lower.includes("rain")) return "☔ वर्षा भएरिरहों छ, छाता ल्याउन नबिर्सनुहोस्!";
     if (lower.includes("snow")) return "❄️ हिउँ परिरहेको छ, न्यानो लुगा लगाउनुहोस्!";
-    if (lower.includes("clear")) return "😎 मौसम सफा छ, बाहिर घुम्न जान सकिन्छ!";
+    if (lower.includes("clear")) return "😎 मौसम सफा छ, बाहिर घुम्न जान सक्छिन्छ!";
     if (lower.includes("cloud")) return "⛅ बादल लागेको छ, आरामदायी मौसम!";
-    if (lower.includes("storm")) return "⚡ आँधी सम्भावना छ, सतर्क रहनुहोस्!";
+    if (lower.includes("storm")) return "⚡ आंधी सम्भावना छ, सतर्क रहनुहोस्!";
     return "ℹ️ मौसम हेरेर योजना बनाउनुहोस्।";
   } else {
     if (lower.includes("rain")) return "☔ It's rainy — carry an umbrella!";
@@ -88,7 +88,7 @@ const Home = () => {
         if (data && data.main) {
           setWeather(data);
         } else {
-          setError(lang === "ne" ? "मौसम जानकारी लोड गर्न सकिएन।" : "Failed to load weather data.");
+          setError(lang === "ne" ? "मौसम जानकारी लोड गर्न सकिएन ।" : "Failed to load weather data.");
         }
       });
 
@@ -123,55 +123,28 @@ const Home = () => {
           : "Real-time weather based on your location."}
       </p>
 
-      <div
-  style={{
-    position: "relative",
-    marginTop: "20px",
-  }}
->
-  <label htmlFor="city-search" style={{ fontWeight: "bold", display: "block", marginBottom: "6px" }}>
-    {lang === "ne" ? "सहर खोज्नुहोस्:" : "Search City:"}
-  </label>
-  <input
-    id="city-search"
-    type="text"
-    placeholder={lang === "ne" ? "सहर टाइप गर्नुहोस्..." : "Enter city..."}
-    value={inputValue}
-    onChange={(e) => setInputValue(e.target.value)}
-    list="city-history"
-    aria-label="City Search"
-    style={{
-      padding: "8px",
-      fontSize: "1rem",
-      width: "100%",
-      border: "1px solid #ccc",
-      borderRadius: "4px",
-    }}
-  />
-  <datalist id="city-history">
-    {history.map((city, index) => (
-      <option value={city} key={index} />
-    ))}
-  </datalist>
+      <div style={{ position: "relative", margin: "20px 0" }}>
+        <input
+          id="city-search"
+          type="text"
+          name="city"
+          placeholder={lang === "ne" ? "सहर टाइप गर्नुहोस्..." : "Enter city..."}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          list="city-history"
+          className="city-input"
+          aria-label="City Search"
+        />
+        <datalist id="city-history">
+          {history.map((city, index) => (
+            <option value={city} key={index} />
+          ))}
+        </datalist>
 
-  <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-    <button
-      onClick={handleSearch}
-      aria-label="Search city button"
-      style={{
-        padding: "8px 12px",
-        fontSize: "1rem",
-        backgroundColor: "#1a73e8",
-        color: "white",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-      }}
-    >
-      {lang === "ne" ? "खोज्नुहोस्" : "Search"}
-    </button>
-  </div>
-</div>
+        <button onClick={handleSearch} className="search-button">
+          {lang === "ne" ? "खोज्नुहोस्" : "Search"}
+        </button>
+      </div>
 
       {loading && (
         <div style={{ textAlign: "center", marginTop: "30px" }}>
@@ -181,37 +154,51 @@ const Home = () => {
       )}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {weather && (
-        <div style={{ marginTop: "30px" }}>
-          <h3 style={{ textAlign: "center" }}>
-            {lang === "ne" ? `${weather.name} को मौसम` : `Weather in ${weather.name}`}
-          </h3>
-          <div className="weather-panel" style={{ display: "flex", gap: "40px" }}>
-            <div className="weather-left" style={{ flex: 1, textAlign: "center" }}>
-              <WeatherIcon condition={weather.weather[0].main} />
-              <p style={{ textTransform: "capitalize" }}>{weather.weather[0].description}</p>
-              {tomorrowForecast && (
-                <p>
-                  📅 {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow Forecast"}: {Math.round(tomorrowForecast.min)}{unitSymbol} / {Math.round(tomorrowForecast.max)}{unitSymbol}
-                </p>
-              )}
-              <div style={{ marginTop: "20px" }}>
-                <p style={{ fontStyle: "italic", color: "#444" }}>
-                  {getWeatherTip(weather.weather[0].main, lang)}
-                </p>
-                {weather._cached && (
-                  <p style={{ color: "orange", fontSize: "0.85rem" }}>
-                    ⚠️ {lang === "ne" ? "क्यास गरिएको डाटा" : "Cached data"} – {new Date(weather._updated).toLocaleString()}
+      {weather && (() => {
+        let isDayTime = true;
+        if (weather.sys?.sunrise && weather.sys?.sunset && weather.dt) {
+          const nowUTC = weather.dt;
+          isDayTime = nowUTC >= weather.sys.sunrise && nowUTC < weather.sys.sunset;
+        }
+
+        return (
+          <div style={{ marginTop: "30px" }}>
+            <h3 style={{ textAlign: "center", fontSize: "1.5rem" }}>
+              {isDayTime ? "☀️" : "🌙"} {lang === "ne" ? `${weather.name} को मौसम` : `Weather in ${weather.name}`}
+            </h3>
+            <p style={{ textAlign: "center", color: "#777", marginTop: "-8px" }}>
+              {isDayTime
+                ? lang === "ne" ? "अहिले दिनको समय हो" : "It's daytime"
+                : lang === "ne" ? "अहिले रातको समय हो" : "It's nighttime"}
+            </p>
+
+            <div className="weather-panel" style={{ display: "flex", gap: "40px" }}>
+              <div className="weather-left" style={{ flex: 1, textAlign: "center" }}>
+                <WeatherIcon condition={weather.weather[0].main} isDayTime={isDayTime} />
+                <p style={{ textTransform: "capitalize" }}>{weather.weather[0].description}</p>
+                {tomorrowForecast && (
+                  <p>
+                    🗕️ {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow Forecast"}: {Math.round(tomorrowForecast.min)}{unitSymbol} / {Math.round(tomorrowForecast.max)}{unitSymbol}
                   </p>
                 )}
+                <div style={{ marginTop: "20px" }}>
+                  <p style={{ fontStyle: "italic", color: "#444" }}>
+                    {getWeatherTip(weather.weather[0].main, lang)}
+                  </p>
+                  {weather._cached && (
+                    <p style={{ color: "orange", fontSize: "0.85rem" }}>
+                      ⚠️ {lang === "ne" ? "क्यास गरिएको डाटा" : "Cached data"} – {new Date(weather._updated).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="weather-right" style={{ flex: 2 }}>
+                <WeatherMetrics data={weather} unit={unit} />
               </div>
             </div>
-            <div className="weather-right" style={{ flex: 2 }}>
-              <WeatherMetrics data={weather} unit={unit} exclude={["wind_gust", "dew_point"]} />
-            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };
