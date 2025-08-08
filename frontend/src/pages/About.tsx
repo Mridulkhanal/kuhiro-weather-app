@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
-import "./About.css"; 
+import "./About.css";
 
 const About = () => {
   const { lang } = useLanguage();
@@ -18,23 +18,68 @@ const About = () => {
     },
   ];
 
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [feedbackList, setFeedbackList] = useState<any[]>([]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      const res = await fetch("http://localhost:8000/api/feedback/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setToastMessage(lang === "ne" ? "प्रतिक्रिया पठाइयो!" : "Feedback submitted!");
+        setFormData({ name: "", email: "", message: "" });
+        fetchFeedback(); // reload updated list
+      } else {
+        setToastMessage(lang === "ne" ? "त्रुटि भयो!" : "Something went wrong.");
+      }
+    } catch {
+      setToastMessage(lang === "ne" ? "सर्भर समस्या!" : "Server error.");
+    } finally {
+      setSubmitting(false);
+      setTimeout(() => setToastMessage(""), 3000);
+    }
+  };
+
+  const fetchFeedback = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/api/feedback/");
+      if (res.ok) {
+        const data = await res.json();
+        setFeedbackList(data);
+      }
+    } catch {
+      console.warn("Failed to fetch feedback");
+    }
+  };
+
+  useEffect(() => {
+    fetchFeedback();
+  }, []);
+
   return (
     <div className="about-container">
-      <h2 >{lang === "ne" ? "हाम्रोबारे" : "About Kuhiro"}</h2>
+      <h2>{lang === "ne" ? "हाम्रोबारे" : "About Kuhiro"}</h2>
+
       <p className="about-description">
         {lang === "ne"
-          ? "Kuhiro एक रियल-टाइम मौसम पूर्वानुमान एप हो जुन तपाईंलाई तपाईंको स्थान अनुसार मौसम जानकारी उपलब्ध गराउँछ। हामीले यस एपलाई प्रयोगकर्ताको अनुभवलाई ध्यानमा राखेर बनाएका छौं, जसमा आधुनिक UI, बहुभाषिक समर्थन, र मौसम आधारित सुझावहरू छन्।"
-          : "Kuhiro is a real-time weather forecast application that delivers weather updates based on your location. We’ve built this app with a focus on user experience, modern UI, multilingual support, and condition-based weather tips."}
-      </p>
-      <p>
-        {lang === "ne"
-          ? "हाम्रो लक्ष्य तपाईंलाई सजिलो र सटीक मौसम जानकारी प्रदान गर्नु हो। Kuhiro लाई प्रयोग गरेर तपाईंले आफ्नो दैनिक गतिविधिहरूलाई मौसम अनुसार योजना बनाउन सक्नुहुनेछ।"
-          : "Our goal is to provide you with easy and accurate weather information. With Kuhiro, you can plan your daily activities based on the weather."}
-      </p>
-      <p>
-        {lang === "ne"
-          ? "हामी निरन्तर रुपमा Kuhiro लाई अझ प्रभावकारी र प्रयोगमैत्री बनाउन सुधार गर्दैछौं।"
-          : "We are constantly improving Kuhiro to make it more efficient and user-friendly."}
+          ? "Kuhiro एक रियल-टाइम मौसम पूर्वानुमान एप हो जुन तपाईंलाई तपाईंको स्थान अनुसार मौसम जानकारी उपलब्ध गराउँछ।"
+          : "Kuhiro is a real-time weather forecast application that delivers weather updates based on your location."}
       </p>
 
       <h3 className="section-title">{lang === "ne" ? "विशेषताहरू" : "Features"}</h3>
@@ -42,38 +87,72 @@ const About = () => {
         <li>{lang === "ne" ? "रियल-टाइम मौसम अपडेट" : "Real-time Weather Updates"}</li>
         <li>{lang === "ne" ? "बहुभाषिक समर्थन" : "Multilingual Support"}</li>
         <li>{lang === "ne" ? "उपयोगकर्ता-मित्रता" : "User-friendly Interface"}</li>
-        </ul>
+      </ul>
 
-      <p className="about-description">
-        {lang === "ne"
-          ? "हामी निरन्तर रुपमा Kuhiro लाई अझ प्रभावकारी र प्रयोगमैत्री बनाउन सुधार गर्दैछौं।"
-          : "We are constantly improving Kuhiro to make it more efficient and user-friendly."}
-      </p>
       <h3 className="section-title">{lang === "ne" ? "प्रतिक्रिया पठाउनुहोस्" : "Send Feedback"}</h3>
-    <form className="feedback-form" onSubmit={(e) => e.preventDefault()}>
-     <div className="form-group">
-    <label htmlFor="name">{lang === "ne" ? "नाम" : "Name"}</label>
-    <input type="text" id="name" name="name" placeholder={lang === "ne" ? "तपाईंको नाम" : "Your name"} required />
-    </div>
-    <div className="form-group">
-    <label htmlFor="email">{lang === "ne" ? "इमेल" : "Email"}</label>
-    <input type="email" id="email" name="email" placeholder="example@email.com" required />
-     </div>
-     <div className="form-group">
-    <label htmlFor="message">{lang === "ne" ? "सन्देश" : "Message"}</label>
-    <textarea id="message" name="message" rows={4} placeholder={lang === "ne" ? "तपाईंको सन्देश..." : "Your message..."} required />
-    </div>
-    <button type="submit" className="submit-button">
-    {lang === "ne" ? "पठाउनुहोस्" : "Send"}
-     </button>
-    </form>
+      <form className="feedback-form" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="name">{lang === "ne" ? "नाम" : "Name"}</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder={lang === "ne" ? "तपाईंको नाम" : "Your name"}
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <h3 className="section-title">{lang === "ne" ? "प्रयोगकर्ता प्रतिक्रिया" : "User Feedback"}</h3>
-        <p>
-          {lang === "ne"
-            ? "हामी तपाईंको प्रतिक्रिया सुन्न चाहन्छौं। कृपया हामीलाई बताउनुहोस् कि तपाईंले Kuhiro को बारेमा के सोच्छन्।"
-            : "We value your feedback. Please let us know what you think about Kuhiro."}
-        </p>
+        <div className="form-group">
+          <label htmlFor="email">{lang === "ne" ? "इमेल" : "Email"}</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="example@email.com"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="message">{lang === "ne" ? "सन्देश" : "Message"}</label>
+          <textarea
+            id="message"
+            name="message"
+            rows={4}
+            placeholder={lang === "ne" ? "तपाईंको सन्देश..." : "Your message..."}
+            value={formData.message}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <button type="submit" className="submit-button" disabled={submitting}>
+          {submitting ? (lang === "ne" ? "पठाइँदै..." : "Sending...") : (lang === "ne" ? "पठाउनुहोस्" : "Send")}
+        </button>
+      </form>
+
+      {toastMessage && (
+        <div className="toast-message">
+          {toastMessage}
+        </div>
+      )}
+
+      <h3 className="section-title">{lang === "ne" ? "प्रयोगकर्ता प्रतिक्रिया" : "User Feedback"}</h3>
+      {feedbackList.length === 0 ? (
+        <p>{lang === "ne" ? "अहिलेसम्म प्रतिक्रिया छैन।" : "No feedback yet."}</p>
+      ) : (
+        <ul className="feedback-list">
+          {feedbackList.map((fb, idx) => (
+            <li key={idx} className="feedback-item">
+              <p><strong>{fb.name}</strong>: {fb.message}</p>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <h3 className="section-title">{lang === "ne" ? "योगदानकर्ताहरू" : "Contributors"}</h3>
       <ul className="contributors-list">
