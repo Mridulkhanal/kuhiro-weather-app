@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Forecast from "./pages/Forecast";
 import Navbar from "./components/Navbar";
+import About from "./pages/About";
 import Footer from "./components/Footer";
 import { LanguageProvider } from "./context/LanguageContext"; 
 import WeatherMap from "./pages/WeatherMap";
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/forecast" element={<Forecast />} />
             <Route path="/map" element={<WeatherMap />} />
+            <Route path="/about" element={<About />} />
           </Routes>
         </div>
         <Footer />

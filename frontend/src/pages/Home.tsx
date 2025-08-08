@@ -193,7 +193,7 @@ const Home = () => {
                 </div>
               </div>
               <div className="weather-right" style={{ flex: 2 }}>
-                <WeatherMetrics data={weather} unit={unit} exclude={["wind_gust", "dew_point"]} />
+                <WeatherMetrics data={weather} unit={unit} />
               </div>
             </div>
           </div>
