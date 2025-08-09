@@ -109,6 +109,7 @@ const About = () => {
             type="text"
             id="name"
             name="name"
+            autoComplete="name"
             placeholder={lang === "ne" ? "तपाईंको नाम" : "Your name"}
             value={formData.name}
             onChange={handleChange}
@@ -122,6 +123,7 @@ const About = () => {
             type="email"
             id="email"
             name="email"
+            autoComplete="email"
             placeholder="example@email.com"
             value={formData.email}
             onChange={handleChange}
@@ -134,6 +136,7 @@ const About = () => {
           <textarea
             id="message"
             name="message"
+            autoComplete="off"
             rows={4}
             placeholder={lang === "ne" ? "तपाईंको सन्देश..." : "Your message..."}
             value={formData.message}
@@ -161,7 +164,7 @@ const About = () => {
         <ul className="feedback-list">
           {feedbackList.map((fb) => (
             <li key={fb.id} className="feedback-item">
-              <p><strong>{fb.name}</strong> ({fb.email}): {fb.message}</p>
+              <p><strong>{fb.name}</strong>: {fb.message}</p>
             </li>
           ))}
         </ul>
