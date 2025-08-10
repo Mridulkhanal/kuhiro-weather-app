@@ -136,9 +136,9 @@ const About = () => {
       {/* Features */}
       <h3 className="section-title">{lang === "ne" ? "विशेषताहरू" : "Features"}</h3>
       <ul className="features-list">
-        <li>{lang === "ne" ? "रियल-टाइम मौसम अपडेट" : "Real-time Weather Updates"}</li>
-        <li>{lang === "ne" ? "बहुभाषिक समर्थन" : "Multilingual Support"}</li>
-        <li>{lang === "ne" ? "उपयोगकर्ता-मित्रता" : "User-friendly Interface"}</li>
+        <p>{lang === "ne" ? "रियल-टाइम मौसम अपडेट" : "Real-time Weather Updates"}</p>
+        <p>{lang === "ne" ? "बहुभाषिक समर्थन" : "Multilingual Support"}</p>
+        <p>{lang === "ne" ? "उपयोगकर्ता-मित्रता" : "User-friendly Interface"}</p>
       </ul>
 
       {/* Feedback Form */}
@@ -202,13 +202,13 @@ const About = () => {
         <p>{lang === "ne" ? "अहिलेसम्म प्रतिक्रिया छैन।" : "No feedback yet."}</p>
       ) : (
         <>
-          <ul className="feedback-list">
+          <p className="feedback-list">
             {feedbackList.slice(0, visibleCount).map((fb) => (
-              <li key={fb.id} className="feedback-item">
+              <p key={fb.id} className="feedback-item">
                 <p><strong>{fb.name}</strong>: {fb.message}</p>
-              </li>
+              </p>
             ))}
-          </ul>
+          </p>
           {visibleCount < feedbackList.length && (
             <button className="load-more-btn" onClick={loadMoreFeedback}>
               {lang === "ne" ? "थप लोड गर्नुहोस्" : "Load More"}
