@@ -8,6 +8,7 @@ from rest_framework import status
 from .models import Feedback
 from .serializers import FeedbackSerializer
 from rest_framework.pagination import PageNumberPagination
+from django.core.mail import send_mail
 
 class FeedbackPagination(PageNumberPagination):
     page_size = 5  # Load 5 feedback entries at a time
@@ -19,12 +20,37 @@ class FeedbackView(generics.ListCreateAPIView):
     serializer_class = FeedbackSerializer
     pagination_class = FeedbackPagination
     
+    def perform_create(self, serializer):
+        feedback = serializer.save()
+
+        # Email to admin
+        send_mail(
+            subject=f"New Feedback from {feedback.name}",
+            message=f"Name: {feedback.name}\nEmail: {feedback.email}\n\nMessage:\n{feedback.message}",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[settings.DEFAULT_FROM_EMAIL],
+            fail_silently=False,
+        )
+
+        # Email to user (confirmation)
+        send_mail(
+            subject="Thanks for your feedback - Kuhiro",
+            message=(
+                f"Hi {feedback.name},\n\n"
+                "Thanks for sending your feedback to Kuhiro. We have received your message and will get back to you soon.\n\n"
+                "Best regards,\n"
+                "Kuhiro Team"
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[feedback.email],
+            fail_silently=False,
+        )
+        
 class FeedbackView(APIView):
     def get(self, request):
         feedbacks = Feedback.objects.all().order_by("-submitted_at")
         serializer = FeedbackSerializer(feedbacks, many=True)
         return Response(serializer.data)
-
     def post(self, request):
         serializer = FeedbackSerializer(data=request.data)
         if serializer.is_valid():
