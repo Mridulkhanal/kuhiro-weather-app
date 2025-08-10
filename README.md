@@ -63,7 +63,6 @@ It supports **multilingual functionality**, **offline mode**, and **animated wea
 > **Kuhiro in Action**
 
 ![Kuhiro Preview](./frontend/src/assets/preview/kuhiro-demo.gif)  
-*(Place your GIF inside `frontend/src/assets/preview/` and update the path if needed)*
 
 ---
 
