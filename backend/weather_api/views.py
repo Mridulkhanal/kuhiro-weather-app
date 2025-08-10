@@ -7,7 +7,18 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Feedback
 from .serializers import FeedbackSerializer
+from rest_framework.pagination import PageNumberPagination
 
+class FeedbackPagination(PageNumberPagination):
+    page_size = 5  # Load 5 feedback entries at a time
+    page_size_query_param = 'page_size'
+    max_page_size = 20
+
+class FeedbackView(generics.ListCreateAPIView):
+    queryset = Feedback.objects.all().order_by('-submitted_at')
+    serializer_class = FeedbackSerializer
+    pagination_class = FeedbackPagination
+    
 class FeedbackView(APIView):
     def get(self, request):
         feedbacks = Feedback.objects.all().order_by("-submitted_at")

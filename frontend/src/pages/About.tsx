@@ -7,7 +7,7 @@ interface Feedback {
   name: string;
   email: string;
   message: string;
-  created_at?: string;
+  submitted_at?: string;
 }
 
 const About = () => {
@@ -27,17 +27,54 @@ const About = () => {
   ];
 
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [errors, setErrors] = useState({ name: "", email: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [feedbackList, setFeedbackList] = useState<Feedback[]>([]);
+  const [visibleCount, setVisibleCount] = useState(5);
+
+  const validateForm = () => {
+    let valid = true;
+    let newErrors = { name: "", email: "", message: "" };
+
+    // Name validation
+    if (!/^[a-zA-Z\s]+$/.test(formData.name.trim())) {
+      newErrors.name = lang === "ne" ? "नाममा अक्षर र स्पेस मात्र हुन सक्छ।" : "Name can only contain letters and spaces.";
+      valid = false;
+    }
+
+    // Email validation
+    if (!/^[a-zA-Z][a-zA-Z0-9._-]*@[a-zA-Z]+\.[a-zA-Z]+$/.test(formData.email.trim())) {
+      newErrors.email =
+        lang === "ne"
+          ? "इमेल अक्षरले सुरु हुनुपर्छ र सही ढाँचामा हुनुपर्छ (e.g., john@domain.com)"
+          : "Email must start with a letter, contain one @, and have a valid domain (e.g., john@domain.com).";
+      valid = false;
+    }
+
+    // Message validation
+    if (formData.message.trim().length < 5) {
+      newErrors.message =
+        lang === "ne"
+          ? "सन्देश कम्तीमा ५ अक्षरको हुनुपर्छ।"
+          : "Message must be at least 5 characters.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear error while typing
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     setSubmitting(true);
 
     try {
@@ -49,7 +86,7 @@ const About = () => {
 
       if (res.ok) {
         const newFeedback: Feedback = await res.json();
-        setFeedbackList((prev) => [newFeedback, ...prev]); // Add on top
+        setFeedbackList((prev) => [newFeedback, ...prev]);
         setToastMessage(lang === "ne" ? "प्रतिक्रिया पठाइयो!" : "Feedback submitted!");
         setFormData({ name: "", email: "", message: "" });
       } else {
@@ -69,7 +106,7 @@ const About = () => {
       if (res.ok) {
         const data: Feedback[] = await res.json();
         const sorted = [...data].sort(
-          (a, b) => new Date(b.created_at || "").getTime() - new Date(a.created_at || "").getTime()
+          (a, b) => new Date(b.submitted_at || "").getTime() - new Date(a.submitted_at || "").getTime()
         );
         setFeedbackList(sorted);
       }
@@ -81,6 +118,10 @@ const About = () => {
   useEffect(() => {
     fetchFeedback();
   }, []);
+
+  const loadMoreFeedback = () => {
+    setVisibleCount((prev) => prev + 5);
+  };
 
   return (
     <div className="about-container">
@@ -115,6 +156,7 @@ const About = () => {
             onChange={handleChange}
             required
           />
+          {errors.name && <small className="error-text">{errors.name}</small>}
         </div>
 
         <div className="form-group">
@@ -129,6 +171,7 @@ const About = () => {
             onChange={handleChange}
             required
           />
+          {errors.email && <small className="error-text">{errors.email}</small>}
         </div>
 
         <div className="form-group">
@@ -143,6 +186,7 @@ const About = () => {
             onChange={handleChange}
             required
           />
+          {errors.message && <small className="error-text">{errors.message}</small>}
         </div>
 
         <button type="submit" className="submit-button" disabled={submitting}>
@@ -150,24 +194,27 @@ const About = () => {
         </button>
       </form>
 
-      {toastMessage && (
-        <div className="toast-message">
-          {toastMessage}
-        </div>
-      )}
+      {toastMessage && <div className="toast-message">{toastMessage}</div>}
 
       {/* Display Feedback */}
       <h3 className="section-title">{lang === "ne" ? "प्रयोगकर्ता प्रतिक्रिया" : "User Feedback"}</h3>
       {feedbackList.length === 0 ? (
         <p>{lang === "ne" ? "अहिलेसम्म प्रतिक्रिया छैन।" : "No feedback yet."}</p>
       ) : (
-        <ul className="feedback-list">
-          {feedbackList.map((fb) => (
-            <li key={fb.id} className="feedback-item">
-              <p><strong>{fb.name}</strong>: {fb.message}</p>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="feedback-list">
+            {feedbackList.slice(0, visibleCount).map((fb) => (
+              <li key={fb.id} className="feedback-item">
+                <p><strong>{fb.name}</strong>: {fb.message}</p>
+              </li>
+            ))}
+          </ul>
+          {visibleCount < feedbackList.length && (
+            <button className="load-more-btn" onClick={loadMoreFeedback}>
+              {lang === "ne" ? "थप लोड गर्नुहोस्" : "Load More"}
+            </button>
+          )}
+        </>
       )}
 
       {/* Contributors */}
