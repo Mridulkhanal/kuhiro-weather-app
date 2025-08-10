@@ -18,11 +18,8 @@
 
 ## 📖 About the Project
 
-**Kuhiro** (_कुहिरो_, meaning “fog” in Nepali) is a **real-time global weather forecast web application** designed to provide accurate weather data with an elegant and user-friendly interface.  
+**Kuhiro** (_कुहिरो_) is a **real-time global weather forecast web application** designed to provide accurate weather data with an elegant and user-friendly interface.  
 It supports **multilingual functionality**, **offline mode**, and **animated weather icons**, ensuring a seamless experience across devices.
-
-**In Nepali:**  
-कुहिरो एक आधुनिक मौसम एप हो जसले विश्वव्यापी मौसमको पूर्वानुमान र वास्तविक-समय अपडेटहरू प्रदान गर्दछ। यसमा बहुभाषिक समर्थन, आकर्षक UI, र प्रयोगकर्तामैत्री अनुभव उपलब्ध छ।
 
 ---
 
@@ -61,9 +58,17 @@ It supports **multilingual functionality**, **offline mode**, and **animated wea
 - Custom Django endpoints for feedback storage & retrieval
 
 ---
+## 🎥 Project Preview
+
+> **Kuhiro in Action**
+
+![Kuhiro Preview](./frontend/src/assets/preview/kuhiro-demo.gif)  
+*(Place your GIF inside `frontend/src/assets/preview/` and update the path if needed)*
+
+---
 
 ## 📂 Project Structure
-
+```yaml
 kuhiro-weather-app/
 │
 ├── backend/ # Django backend
@@ -82,7 +87,7 @@ kuhiro-weather-app/
 │ └── vite.config.ts
 │
 └── README.md
-
+```
 ---
 
 ## ⚙️ Installation & Setup
@@ -95,51 +100,88 @@ kuhiro-weather-app/
 ---
 
 ### **Backend Setup (Django API)**
-
+```bash
+# Go to backend folder
 cd backend
-python -m venv env
-env\Scripts\activate    # Windows
-# source env/bin/activate   # Mac/Linux
 
+# Create & activate virtual environment
+python -m venv env
+env\Scripts\activate         # Windows
+# source env/bin/activate    # Mac/Linux
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Apply migrations
 python manage.py migrate
+
+# Start server
 python manage.py runserver
+```
 Backend will start at: http://localhost:8000/
 
-Frontend Setup (React + Vite)
-
+### Frontend Setup (React + Vite)
+```bash
+# Go to frontend folder
 cd frontend
+
+# Install dependencies
 npm install
+
+# Start dev server
 npm run dev
+
+```
 Frontend will start at: http://localhost:5173/
 
-🔗 API Integration
-Weather Data API: Uses OpenWeatherMap endpoints for:
+## 📡 API Endpoints
+```yaml
 
-Current weather
+GET  /api/weather/         # Get current weather
+GET  /api/forecast/        # Get 5-day forecast
+POST /api/feedback/        # Submit feedback
+GET  /api/feedback/        # Fetch all feedback
+```
 
-5-day forecast
-
-Geocoding for location search suggestions
-
-Feedback API:
-
-POST /api/feedback/ — Submit feedback (name, email, message)
-
-GET /api/feedback/ — Retrieve user feedback list
-
-🎥 Preview
-
-A quick look at Kuhiro’s interface and features.
-
-📸 Screenshots
+# 📸 Screenshots
 (Will add screenshots of the homepage, forecast table, weather map, and feedback leter)
 
-👨‍💻 Contributors
-Name	Role	Profile
-Mridul Khanal	Lead Developer	GitHub
-OpenWeatherMap	API Provider	Website
+## 👨‍💻 Contributors
+```yaml
 
-📜 License
-This project is licensed under the MIT License — feel free to modify and distribute.
+- name: Mridul Khanal
+  role: Lead Developer
+  github: https://github.com/Mridulkhanal
 
+- name: OpenWeatherMap
+  role: API Provider
+  website: https://openweathermap.org
+  
+```
+## 🧠 Development Philosophy
+```txt
+
+Origin: Started as a simple weather viewer for my location.
+Growth: Expanded into a multi-feature global forecast tool.
+Mission: Make weather information clear, accessible, and fast.
+I believe in code that scales with purpose — clean, efficient, and impactful
+
+```
+## 🧬 Coding Belief
+```js
+
+while (true) {
+    learn();
+    build();
+    iterate();
+    stayCurious();
+}
+```
+
+## 📜 License
+```txt
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software...
