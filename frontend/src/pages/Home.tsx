@@ -20,10 +20,8 @@ const nepalCities = [
   "Birendranagar",
   "Dhangadhi",
   "Tansen",
-  "Itahari",
   "Bharatpur",
   "Rajbiraj",
-  "Gaur",
   "Tikapur",
   "Kirtipur",
   "Damak"
@@ -56,6 +54,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [tomorrowForecast, setTomorrowForecast] = useState<{ max: number; min: number } | null>(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   // Nepal overview state
   const [nepalWeather, setNepalWeather] = useState<any[]>([]);
@@ -64,6 +63,11 @@ const Home = () => {
   const { lang } = useLanguage();
   const unit = localStorage.getItem("kuhiro_unit") === "imperial" ? "imperial" : "metric";
   const unitSymbol = unit === "imperial" ? "°F" : "°C";
+
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("kuhiro_history") || "[]");
@@ -155,6 +159,14 @@ const Home = () => {
       .catch(() => setLoadingNepal(false));
   }, [unit]);
 
+  const handleCityClick = (clickedCity: string) => {
+    setInputValue(clickedCity);
+    setCity(clickedCity);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  };
+
   return (
     <div style={{ maxWidth: "700px", margin: "auto", padding: "0 20px" }}>
       <h2 className="title">{lang === "ne" ? `Kuhiro मा स्वागत छ ☁️` : `Welcome to Kuhiro ☁️`}</h2>
@@ -187,7 +199,6 @@ const Home = () => {
         </button>
       </div>
 
-      {/* Main Weather Panel */}
       {loading && (
         <div style={{ textAlign: "center", marginTop: "30px" }}>
           <ClipLoader size={50} color="#1a73e8" />
@@ -202,12 +213,39 @@ const Home = () => {
           const nowUTC = weather.dt;
           isDayTime = nowUTC >= weather.sys.sunrise && nowUTC < weather.sys.sunset;
         }
+
+        const localDate = new Date(currentTime.getTime() + (weather.timezone * 1000));
+
+        const dateFormatter = new Intl.DateTimeFormat(lang === 'ne' ? 'ne-NP' : 'en-US', {
+          timeZone: 'UTC',
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+
+        const timeFormatter = new Intl.DateTimeFormat(lang === 'ne' ? 'ne-NP' : 'en-US', {
+          timeZone: 'UTC',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        });
+
+        const formattedDate = dateFormatter.format(localDate);
+        const formattedTime = timeFormatter.format(localDate);
+
         return (
-          <div style={{ marginTop: "30px" }}>
+          <div id="main-weather" style={{ marginTop: "30px" }}>
             <h3 style={{ textAlign: "center", fontSize: "1.5rem" }}>
               {isDayTime ? "☀️" : "🌙"} {lang === "ne" ? `${weather.name} को मौसम` : `Weather in ${weather.name}`}
             </h3>
-            <p style={{ textAlign: "center", color: "#777", marginTop: "-8px" }}>
+            <h5 style={{ marginTop: "10px" }}>
+                  {formattedDate}
+                </h5>
+                <h5 style={{ marginTop: "-10px"}}>
+                  {formattedTime}
+                </h5>
+            <p style={{ textAlign: "center", marginTop: "-8px" }}>
               {isDayTime
                 ? lang === "ne" ? "अहिले दिनको समय हो" : "It's daytime"
                 : lang === "ne" ? "अहिले रातको समय हो" : "It's nighttime"}
@@ -221,6 +259,9 @@ const Home = () => {
                     🗕️ {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow Forecast"}: {Math.round(tomorrowForecast.min)}{unitSymbol} / {Math.round(tomorrowForecast.max)}{unitSymbol}
                   </p>
                 )}
+                <p className="temp" style={{ fontSize: "2.5rem", margin: "10px 0" }}>
+                  {Math.round(weather.main.temp)}{unitSymbol}
+                </p>
                 <div style={{ marginTop: "20px" }}>
                   <p style={{ fontStyle: "italic", color: "#444" }}>
                     {getWeatherTip(weather.weather[0].main, lang)}
@@ -243,7 +284,7 @@ const Home = () => {
       {/* Nepal Weather Overview */}
       <div style={{ marginTop: "50px" }}>
         <h3 style={{ textAlign: "center", fontSize: "1.4rem", marginBottom: "20px" }}>
-          🇳🇵 {lang === "ne" ? "नेपालका प्रमुख शहरहरूको मौसम" : "Nepal Weather Overview"}
+         {lang === "ne" ? "नेपालका प्रमुख शहरहरूको मौसम" : "Nepal Weather Overview"}
         </h3>
         {loadingNepal ? (
           <div style={{ textAlign: "center" }}>
@@ -253,7 +294,12 @@ const Home = () => {
         ) : (
           <div className="nepal-weather-grid">
             {nepalWeather.map((w) => (
-              <div className="nepal-weather-card" key={w.city}>
+              <div 
+                className="nepal-weather-card" 
+                key={w.city} 
+                onClick={() => handleCityClick(w.city)}
+                style={{ cursor: "pointer" }}
+              >
                 <h4>{w.city}</h4>
                 <WeatherIcon condition={w.weather[0].main} isDayTime={true} />
                 <p className="temp">{Math.round(w.main.temp)}{unitSymbol}</p>
