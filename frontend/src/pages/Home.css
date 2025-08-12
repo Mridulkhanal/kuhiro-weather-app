@@ -1,0 +1,33 @@
+.nepal-weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 20px;
+}
+
+.nepal-weather-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.nepal-weather-card:hover {
+  transform: translateY(-3px);
+}
+
+.nepal-weather-card h4 {
+  margin-bottom: 8px;
+}
+
+.nepal-weather-card .temp {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.nepal-weather-card .desc {
+  text-transform: capitalize;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}

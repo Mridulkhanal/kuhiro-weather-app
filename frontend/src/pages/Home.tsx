@@ -4,11 +4,35 @@ import { useLanguage } from "../context/LanguageContext";
 import ClipLoader from "react-spinners/ClipLoader";
 import WeatherIcon from "../components/WeatherIcon";
 import WeatherMetrics from "../components/WeatherMetrics";
+import "./Home.css";
+
+const nepalCities = [
+  "Kathmandu",
+  "Pokhara",
+  "Biratnagar",
+  "Lalitpur",
+  "Bhaktapur",
+  "Nepalgunj",
+  "Butwal",
+  "Dharan",
+  "Hetauda",
+  "Janakpur",
+  "Birendranagar",
+  "Dhangadhi",
+  "Tansen",
+  "Itahari",
+  "Bharatpur",
+  "Rajbiraj",
+  "Gaur",
+  "Tikapur",
+  "Kirtipur",
+  "Damak"
+];
 
 const getWeatherTip = (condition: string, lang: string): string => {
   const lower = condition.toLowerCase();
   if (lang === "ne") {
-    if (lower.includes("rain")) return "☔ वर्षा भएरिरहों छ, छाता ल्याउन नबिर्सनुहोस्!";
+    if (lower.includes("rain")) return "☔ वर्षा भइरहेको छ, छाता ल्याउन नबिर्सनुहोस्!";
     if (lower.includes("snow")) return "❄️ हिउँ परिरहेको छ, न्यानो लुगा लगाउनुहोस्!";
     if (lower.includes("clear")) return "😎 मौसम सफा छ, बाहिर घुम्न जान सक्छिन्छ!";
     if (lower.includes("cloud")) return "⛅ बादल लागेको छ, आरामदायी मौसम!";
@@ -32,6 +56,10 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [tomorrowForecast, setTomorrowForecast] = useState<{ max: number; min: number } | null>(null);
+
+  // Nepal overview state
+  const [nepalWeather, setNepalWeather] = useState<any[]>([]);
+  const [loadingNepal, setLoadingNepal] = useState(false);
 
   const { lang } = useLanguage();
   const unit = localStorage.getItem("kuhiro_unit") === "imperial" ? "imperial" : "metric";
@@ -114,6 +142,19 @@ const Home = () => {
     }
   }, [city, lang]);
 
+  // Fetch Nepal weather overview
+  useEffect(() => {
+    setLoadingNepal(true);
+    Promise.all(nepalCities.map((c) =>
+      fetchWeather(c).then(data => ({ city: c, ...data }))
+    ))
+      .then(results => {
+        setNepalWeather(results.filter(r => r && r.main));
+        setLoadingNepal(false);
+      })
+      .catch(() => setLoadingNepal(false));
+  }, [unit]);
+
   return (
     <div style={{ maxWidth: "700px", margin: "auto", padding: "0 20px" }}>
       <h2 className="title">{lang === "ne" ? `Kuhiro मा स्वागत छ ☁️` : `Welcome to Kuhiro ☁️`}</h2>
@@ -123,6 +164,7 @@ const Home = () => {
           : "Real-time weather based on your location."}
       </p>
 
+      {/* Search */}
       <div style={{ position: "relative", margin: "20px 0" }}>
         <input
           id="city-search"
@@ -140,12 +182,12 @@ const Home = () => {
             <option value={city} key={index} />
           ))}
         </datalist>
-
         <button onClick={handleSearch} className="search-button">
           {lang === "ne" ? "खोज्नुहोस्" : "Search"}
         </button>
       </div>
 
+      {/* Main Weather Panel */}
       {loading && (
         <div style={{ textAlign: "center", marginTop: "30px" }}>
           <ClipLoader size={50} color="#1a73e8" />
@@ -160,7 +202,6 @@ const Home = () => {
           const nowUTC = weather.dt;
           isDayTime = nowUTC >= weather.sys.sunrise && nowUTC < weather.sys.sunset;
         }
-
         return (
           <div style={{ marginTop: "30px" }}>
             <h3 style={{ textAlign: "center", fontSize: "1.5rem" }}>
@@ -171,7 +212,6 @@ const Home = () => {
                 ? lang === "ne" ? "अहिले दिनको समय हो" : "It's daytime"
                 : lang === "ne" ? "अहिले रातको समय हो" : "It's nighttime"}
             </p>
-
             <div className="weather-panel" style={{ display: "flex", gap: "40px" }}>
               <div className="weather-left" style={{ flex: 1, textAlign: "center" }}>
                 <WeatherIcon condition={weather.weather[0].main} isDayTime={isDayTime} />
@@ -199,6 +239,30 @@ const Home = () => {
           </div>
         );
       })()}
+
+      {/* Nepal Weather Overview */}
+      <div style={{ marginTop: "50px" }}>
+        <h3 style={{ textAlign: "center", fontSize: "1.4rem", marginBottom: "20px" }}>
+          🇳🇵 {lang === "ne" ? "नेपालका प्रमुख शहरहरूको मौसम" : "Nepal Weather Overview"}
+        </h3>
+        {loadingNepal ? (
+          <div style={{ textAlign: "center" }}>
+            <ClipLoader size={30} color="#1a73e8" />
+            <p>{lang === "ne" ? "नेपालको मौसम लोड हुँदैछ..." : "Loading Nepal weather..."}</p>
+          </div>
+        ) : (
+          <div className="nepal-weather-grid">
+            {nepalWeather.map((w) => (
+              <div className="nepal-weather-card" key={w.city}>
+                <h4>{w.city}</h4>
+                <WeatherIcon condition={w.weather[0].main} isDayTime={true} />
+                <p className="temp">{Math.round(w.main.temp)}{unitSymbol}</p>
+                <p className="desc">{w.weather[0].description}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
