@@ -7,6 +7,7 @@ import "./Forecast.css";
 
 const Forecast = () => {
   const [forecastData, setForecastData] = useState<any>(null);
+  const [alerts, setAlerts] = useState<any[]>([]);
   const [city, setCity] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [history, setHistory] = useState<string[]>([]);
@@ -70,6 +71,7 @@ const Forecast = () => {
         setLoading(false);
         if (data && data.grouped) {
           setForecastData(data);
+          setAlerts(data.alerts || []);
         } else {
           setError(lang === "ne" ? "पूर्वानुमान लोड गर्न सकिएन।" : "Failed to fetch forecast.");
         }
@@ -117,7 +119,7 @@ const Forecast = () => {
 
       {forecastData && forecastData.grouped && (
         <>
-          <ForecastTable data={forecastData.grouped} unitSymbol={unitSymbol} />
+          <ForecastTable data={forecastData.grouped} unitSymbol={unitSymbol} alerts={alerts} />
 
           {forecastData._cached && (
             <p className="cache-warning">

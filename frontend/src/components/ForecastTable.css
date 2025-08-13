@@ -32,9 +32,81 @@
   color: #333;
 }
 
-.forecast-table tr:hover {
+.forecast-table tr:hover,
+.clickable-row {
+  cursor: pointer;
   background-color: #f9fbfe;
   transition: background-color 0.2s ease-in-out;
+}
+
+.animated-icon {
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.trend-chart {
+  height: 40px;
+  width: 80px;
+  margin: 0 auto;
+}
+
+.forecast-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.forecast-toggle button {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #e1e1e1;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.forecast-toggle button.active {
+  background-color: #1a73e8;
+  color: #fff;
+}
+
+.weather-alerts {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 5px;
+}
+
+.weather-alerts .alert {
+  margin: 5px 0;
+  color: #856404;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -52,12 +124,37 @@
     color: #ddd;
   }
 
-  .forecast-table tr:hover {
+  .forecast-table tr:hover,
+  .clickable-row:hover {
     background-color: #2e2e2e;
+  }
+
+  .tooltip:hover::after {
+    background-color: #555;
+    color: #fff;
+  }
+
+  .forecast-toggle button {
+    background-color: #444;
+    color: #ddd;
+  }
+
+  .forecast-toggle button.active {
+    background-color: #3c8ddf;
+    color: #fff;
+  }
+
+  .weather-alerts {
+    background-color: #3c2f2f;
+    border: 1px solid #664d4d;
+  }
+
+  .weather-alerts .alert {
+    color: #ffcccb;
   }
 }
 
 .forecast-table th:first-child,
 .forecast-table td:first-child {
   border-left: none;
-}   
+}

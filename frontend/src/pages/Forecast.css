@@ -8,6 +8,8 @@
   padding: 8px;
   font-size: 1rem;
   width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .search-button {
@@ -19,6 +21,11 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-button:hover {
+  background-color: #1557b0;
 }
 
 .cache-warning {
@@ -27,13 +34,29 @@
   margin-top: 10px;
 }
 
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
 /* Dark Mode Support */
 body.dark .forecast-container {
   background-color: #121212;
   color: #f0f0f0;
 }
 
+body.dark .city-input {
+  border-color: #444;
+  background-color: #2a2a2a;
+  color: #ddd;
+}
+
 body.dark .search-button {
   background-color: #3c8ddf;
   color: #fff;
+}
+
+body.dark .search-button:hover {
+  background-color: #2a6ab0;
 }
