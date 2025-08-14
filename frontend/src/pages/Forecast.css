@@ -97,3 +97,64 @@ body.dark .search-button:hover {
   cursor: pointer;
   color: var(--alert-text, #a33);
 }
+
+.search-compare-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.compare-button {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.compare-button:hover {
+  background: var(--accent-hover);
+  background-color: #1557b0;
+}
+
+.comparison-container {
+  margin-top: 30px;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.comparison-card {
+  background: var(--card-bg);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.comparison-card:hover {
+  transform: translateY(-3px);
+  background: var(--card-hover);
+}
+
+.comparison-card h4 {
+  margin-bottom: 5px;
+}
+
+.comparison-card .condition {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.temp-range {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
