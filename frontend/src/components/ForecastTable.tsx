@@ -12,9 +12,20 @@ import {
   Title,
   Tooltip as ChartTooltip,
   Legend,
+  Filler
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, ChartTooltip, Legend);
+// Register all required Chart.js components, including the Filler plugin
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  ChartTooltip,
+  Legend,
+  Filler
+);
 
 type ForecastTableProps = {
   data: Record<string, any[]>;
