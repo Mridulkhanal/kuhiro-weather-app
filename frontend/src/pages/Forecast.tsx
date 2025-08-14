@@ -8,6 +8,7 @@ import "./Forecast.css";
 const Forecast = () => {
   const [forecastData, setForecastData] = useState<any>(null);
   const [alerts, setAlerts] = useState<any[]>([]);
+  const [dismissedAlerts, setDismissedAlerts] = useState<number[]>([]);
   const [city, setCity] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [history, setHistory] = useState<string[]>([]);
@@ -79,12 +80,17 @@ const Forecast = () => {
     }
   }, [city, lang]);
 
+  const dismissAlert = (index: number) => {
+    setDismissedAlerts((prev) => [...prev, index]);
+  };
+
   return (
     <div className="forecast-container">
       <h2 className="title">
         {lang === "ne" ? "पूर्वानुमान" : "Forecast"}: {city}
       </h2>
 
+      {/* City Search */}
       <div style={{ position: "relative", margin: "20px 0" }}>
         <input
           id="city-search"
@@ -108,6 +114,7 @@ const Forecast = () => {
         </button>
       </div>
 
+      {/* Loading State */}
       {loading && (
         <div style={{ textAlign: "center", marginTop: "30px" }}>
           <ClipLoader size={50} color="#1a73e8" />
@@ -115,11 +122,34 @@ const Forecast = () => {
         </div>
       )}
 
+      {/* Error */}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
+      {/* Weather Alerts */}
+      {alerts.length > 0 && (
+        <div className="alerts-container">
+          {alerts.map((alert, index) =>
+            dismissedAlerts.includes(index) ? null : (
+              <div key={index} className="alert-banner">
+                <strong>⚠ {alert.event || (lang === "ne" ? "मौसम चेतावनी" : "Weather Alert")}</strong>
+                <p>{alert.description || (lang === "ne" ? "कृपया सतर्क रहनुहोस्।" : "Please stay cautious.")}</p>
+                {alert.start && alert.end && (
+                  <small>
+                    {new Date(alert.start * 1000).toLocaleString()} -{" "}
+                    {new Date(alert.end * 1000).toLocaleString()}
+                  </small>
+                )}
+                <button onClick={() => dismissAlert(index)} className="dismiss-btn">×</button>
+              </div>
+            )
+          )}
+        </div>
+      )}
+
+      {/* Forecast Table */}
       {forecastData && forecastData.grouped && (
         <>
-          <ForecastTable data={forecastData.grouped} unitSymbol={unitSymbol} alerts={alerts} />
+          <ForecastTable data={forecastData.grouped} unitSymbol={unitSymbol} />
 
           {forecastData._cached && (
             <p className="cache-warning">

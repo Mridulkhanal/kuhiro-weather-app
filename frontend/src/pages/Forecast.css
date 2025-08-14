@@ -60,3 +60,40 @@ body.dark .search-button {
 body.dark .search-button:hover {
   background-color: #2a6ab0;
 }
+
+.alerts-container {
+  margin-bottom: 20px;
+}
+
+.alert-banner {
+  background-color: var(--alert-bg, #ffe8e8);
+  color: var(--alert-text, #a33);
+  padding: 12px 16px;
+  border-left: 5px solid #d9534f;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  position: relative;
+  box-shadow: var(--shadow, 0 2px 4px rgba(0,0,0,0.1));
+}
+
+.alert-banner p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+}
+
+.alert-banner small {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--secondary-text, #555);
+}
+
+.dismiss-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--alert-text, #a33);
+}
