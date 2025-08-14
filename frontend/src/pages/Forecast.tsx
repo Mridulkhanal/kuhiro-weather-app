@@ -5,6 +5,14 @@ import ForecastTable from "../components/ForecastTable";
 import ClipLoader from "react-spinners/ClipLoader";
 import "./Forecast.css";
 
+// Import weather icons
+import clearIcon from "../assets/weather-icons/clear.svg";
+import rainIcon from "../assets/weather-icons/rain.svg";
+import cloudIcon from "../assets/weather-icons/cloudy.svg";
+import snowIcon from "../assets/weather-icons/snow.svg";
+import stormIcon from "../assets/weather-icons/thunderstorm.svg";
+import mistIcon from "../assets/weather-icons/mist.svg";
+
 const Forecast = () => {
   const [forecastData, setForecastData] = useState<any>(null);
   const [alerts, setAlerts] = useState<any[]>([]);
@@ -34,7 +42,6 @@ const Forecast = () => {
     }
   };
 
-  // Add city to compare list
   const addCompareCity = () => {
     if (inputValue.trim() && !compareCities.includes(inputValue.trim()) && compareCities.length < 3) {
       setCompareCities([...compareCities, inputValue.trim()]);
@@ -90,7 +97,6 @@ const Forecast = () => {
     }
   }, [city, lang]);
 
-  // Fetch compare cities data
   useEffect(() => {
     if (compareCities.length > 0) {
       Promise.all(compareCities.map((c) => fetchForecast(c))).then((results) => {
@@ -102,9 +108,21 @@ const Forecast = () => {
     }
   }, [compareCities, lang]);
 
-  // Get average of values
   const getAvg = (arr: number[]) =>
     arr.length > 0 ? (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1) : "-";
+
+  // Map weather condition to icon
+  const getWeatherIcon = (condition: string) => {
+    const lower = condition.toLowerCase();
+    if (lower.includes("clear")) return clearIcon;
+    if (lower.includes("rain")) return rainIcon;
+    if (lower.includes("cloud")) return cloudIcon;
+    if (lower.includes("snow")) return snowIcon;
+    if (lower.includes("thunder")) return stormIcon;
+    if (lower.includes("storm")) return stormIcon;
+    if (lower.includes("mist") || lower.includes("fog") || lower.includes("haze")) return mistIcon;
+    return clearIcon;
+  };
 
   return (
     <div className="forecast-container">
@@ -161,6 +179,7 @@ const Forecast = () => {
               const wind = getAvg(Object.values(cityData.grouped).flat().map((i: any) => i.wind.speed));
               const condition = cityData.grouped[Object.keys(cityData.grouped)[0]][0].weather[0].description;
               const cityName = cityData.city?.name || compareCities[idx];
+              const icon = getWeatherIcon(condition);
 
               return (
                 <div
@@ -170,6 +189,7 @@ const Forecast = () => {
                   title={lang === "ne" ? "थप विवरण हेर्न क्लिक गर्नुहोस्" : "Click to view details"}
                 >
                   <h4>{cityName}</h4>
+                  <img src={icon} alt={condition} className="weather-icon-small" />
                   <p className="condition">{condition}</p>
                   <div className="temp-range">
                     <span>Min: {Math.round(minTemp)}{unitSymbol}</span>
