@@ -40,6 +40,51 @@
   margin-bottom: 20px;
 }
 
+/* Insights Section */
+.insights-container {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.insights-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg, #fff);
+  box-shadow: var(--shadow, 0 2px 4px rgba(0,0,0,0.1));
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.insights-table th,
+.insights-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.insights-table th {
+  background: var(--accent-color, #1a73e8);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.insights-table td {
+  font-size: 0.95rem;
+  color: var(--secondary-text, #333);
+}
+
+.insights-table .insight-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.insights-table img.weather-icon-small {
+  width: 40px;
+  height: 40px;
+}
+
 /* Dark Mode Support */
 body.dark .forecast-container {
   background-color: #121212;
@@ -59,6 +104,19 @@ body.dark .search-button {
 
 body.dark .search-button:hover {
   background-color: #2a6ab0;
+}
+
+body.dark .insights-table {
+  background: #2a2a2a;
+}
+
+body.dark .insights-table th {
+  background: #3c8ddf;
+}
+
+body.dark .insights-table td {
+  color: #f0f0f0;
+  border-bottom: 1px solid #444;
 }
 
 .alerts-container {

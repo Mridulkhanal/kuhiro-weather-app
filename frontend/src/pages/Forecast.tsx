@@ -124,6 +124,61 @@ const Forecast = () => {
     return clearIcon;
   };
 
+  // Generate Forecast Insights
+  const getForecastInsights = () => {
+    if (!forecastData?.grouped) return null;
+
+    const days = Object.values(forecastData.grouped).flat() as any[];
+    const temps = days.map((d) => d.main.temp);
+    const conditions = days.map((d) => d.weather[0].description.toLowerCase());
+    const winds = days.map((d) => d.wind.speed);
+    const precipitations = days.map((d) => d.rain?.["3h"] || 0);
+
+    // Dominant condition
+    const conditionCounts = conditions.reduce((acc, cond) => {
+      acc[cond] = (acc[cond] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    const dominantCondition = Object.keys(conditionCounts).reduce((a, b) =>
+      conditionCounts[a] > conditionCounts[b] ? a : b
+    );
+
+    // Warmest and coldest days
+    const minTemp = Math.min(...temps);
+    const maxTemp = Math.max(...temps);
+    const warmestDay = days.find((d) => d.main.temp === maxTemp)?.dt_txt.split(" ")[0];
+    const coldestDay = days.find((d) => d.main.temp === minTemp)?.dt_txt.split(" ")[0];
+
+    // Rain chances
+    const rainyDays = precipitations.filter((p) => p > 0).length;
+    const rainChance = ((rainyDays / days.length) * 100).toFixed(0);
+
+    // Windiest day
+    const maxWind = Math.max(...winds);
+    const windiestDay = days.find((d) => d.wind.speed === maxWind)?.dt_txt.split(" ")[0];
+
+    // Format date for display
+    const formatDate = (dateStr: string) => {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString(lang === "ne" ? "ne-NP" : "en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      });
+    };
+
+    return {
+      dominantCondition,
+      warmestDay: formatDate(warmestDay),
+      coldestDay: formatDate(coldestDay),
+      rainChance,
+      windiestDay: formatDate(windiestDay),
+      tempRange: `${Math.round(minTemp)}${unitSymbol} - ${Math.round(maxTemp)}${unitSymbol}`,
+    };
+  };
+
+  const insights = getForecastInsights();
+
   return (
     <div className="forecast-container">
       <h2 className="title">
@@ -153,6 +208,56 @@ const Forecast = () => {
           {lang === "ne" ? "थप्नुहोस्" : "+ Compare"}
         </button>
       </div>
+
+      {/* Forecast Insights */}
+      {insights && (
+        <div className="insights-container">
+          <h3>{lang === "ne" ? "पूर्वानुमान संक्षेप" : "Forecast Insights"}</h3>
+          <table className="insights-table">
+            <thead>
+              <tr>
+                <th>{lang === "ne" ? "विवरण" : "Metric"}</th>
+                <th>{lang === "ne" ? "मान" : "Value"}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{lang === "ne" ? "प्रमुख अवस्था" : "Dominant Condition"}</td>
+                <td>
+                  <div className="insight-value">
+                    <img
+                      src={getWeatherIcon(insights.dominantCondition)}
+                      alt={insights.dominantCondition}
+                      className="weather-icon-small"
+                    />
+                    {insights.dominantCondition}
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>{lang === "ne" ? "न्यानो दिन" : "Warmest Day"}</td>
+                <td>{insights.warmestDay}</td>
+              </tr>
+              <tr>
+                <td>{lang === "ne" ? "चिसो दिन" : "Coldest Day"}</td>
+                <td>{insights.coldestDay}</td>
+              </tr>
+              <tr>
+                <td>{lang === "ne" ? "वर्षाको सम्भावना" : "Rain Chance"}</td>
+                <td>{insights.rainChance}%</td>
+              </tr>
+              <tr>
+                <td>{lang === "ne" ? "हावाहुरी दिन" : "Windiest Day"}</td>
+                <td>{insights.windiestDay}</td>
+              </tr>
+              <tr>
+                <td>{lang === "ne" ? "तापमान दायरा" : "Temp Range"}</td>
+                <td>{insights.tempRange}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Main Forecast Table */}
       {loading && (
