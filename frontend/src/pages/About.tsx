@@ -196,26 +196,30 @@ const About = () => {
 
       {toastMessage && <div className="toast-message">{toastMessage}</div>}
 
-      {/* Display Feedback */}
-      <h3 className="section-title">{lang === "ne" ? "प्रयोगकर्ता प्रतिक्रिया" : "User Feedback"}</h3>
-      {feedbackList.length === 0 ? (
-        <p>{lang === "ne" ? "अहिलेसम्म प्रतिक्रिया छैन।" : "No feedback yet."}</p>
-      ) : (
-        <>
-          <p className="feedback-list">
-            {feedbackList.slice(0, visibleCount).map((fb) => (
-              <p key={fb.id} className="feedback-item">
-                <p><strong>{fb.name}</strong>: {fb.message}</p>
-              </p>
-            ))}
+     {/* Display Feedback */}
+<h3 className="section-title">
+  {lang === "ne" ? "प्रयोगकर्ता प्रतिक्रिया" : "User Feedback"}
+</h3>
+{feedbackList.length === 0 ? (
+  <p>{lang === "ne" ? "अहिलेसम्म प्रतिक्रिया छैन।" : "No feedback yet."}</p>
+) : (
+  <>
+    <div className="feedback-list">
+      {feedbackList.slice(0, visibleCount).map((fb) => (
+        <div key={fb.id} className="feedback-item">
+          <p>
+            <strong>{fb.name}</strong>: {fb.message}
           </p>
-          {visibleCount < feedbackList.length && (
-            <button className="load-more-btn" onClick={loadMoreFeedback}>
-              {lang === "ne" ? "थप लोड गर्नुहोस्" : "Load More"}
-            </button>
-          )}
-        </>
-      )}
+        </div>
+      ))}
+    </div>
+    {visibleCount < feedbackList.length && (
+      <button className="load-more-btn" onClick={loadMoreFeedback}>
+        {lang === "ne" ? "थप लोड गर्नुहोस्" : "Load More"}
+      </button>
+    )}
+  </>
+)}
 
       {/* Contributors */}
       <h3 className="section-title">{lang === "ne" ? "योगदानकर्ताहरू" : "Contributors"}</h3>
