@@ -21,6 +21,7 @@ const Forecast = () => {
   const [history, setHistory] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [localTime, setLocalTime] = useState("");
 
   // Multi-City Comparison
   const [compareCities, setCompareCities] = useState<string[]>([]);
@@ -108,6 +109,25 @@ const Forecast = () => {
     }
   }, [compareCities, lang]);
 
+  // Update local time based on city timezone
+  useEffect(() => {
+    if (forecastData?.city?.timezone) {
+      const updateTime = () => {
+        const now = new Date();
+        const utcTime = now.getTime() + now.getTimezoneOffset() * 60000;
+        const localTime = new Date(utcTime + forecastData.city.timezone * 1000);
+        const hours = localTime.getHours();
+        const minutes = localTime.getMinutes().toString().padStart(2, "0");
+        const period = hours >= 12 ? (lang === "ne" ? "बेलुका" : "PM") : (lang === "ne" ? "बिहान" : "AM");
+        const formattedHours = hours % 12 || 12;
+        setLocalTime(`${formattedHours}:${minutes} ${period}`);
+      };
+      updateTime();
+      const interval = setInterval(updateTime, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [forecastData, lang]);
+
   const getAvg = (arr: number[]) =>
     arr.length > 0 ? (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1) : "-";
 
@@ -183,6 +203,11 @@ const Forecast = () => {
     <div className="forecast-container">
       <h2 className="title">
         {lang === "ne" ? "पूर्वानुमान" : "Forecast"}: {city}
+        {localTime && (
+          <span className="local-time">
+            {lang === "ne" ? ` ${localTime} मा ${city}` : ` ${localTime} in ${city}`}
+          </span>
+        )}
       </h2>
 
       {/* Search & Compare Controls */}
@@ -205,7 +230,7 @@ const Forecast = () => {
           {lang === "ne" ? "खोज्नुहोस्" : "Search"}
         </button>
         <button onClick={addCompareCity} className="compare-button">
-          {lang === "ne" ? "थप्नुहोस्" : "+ Compare"}
+          {lang === "ne" ? "थप्नुहोस्" : "Compare"}
         </button>
       </div>
 

@@ -12,7 +12,7 @@
   border-radius: 5px;
 }
 
-.search-button {
+.search-button,.compare-button {
   padding: 8px 12px;
   margin-top: 10px;
   font-size: 1rem;
@@ -24,7 +24,7 @@
   transition: background-color 0.2s ease;
 }
 
-.search-button:hover {
+.search-button:hover,.compare-button:hover {
   background-color: #1557b0;
 }
 
@@ -38,6 +38,13 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 20px;
+}
+
+.local-time {
+  font-size: 0.9rem;
+  font-weight: normal;
+  color: var(--secondary-text, #555);
+  margin-left: 10px;
 }
 
 /* Insights Section */
@@ -119,6 +126,10 @@ body.dark .insights-table td {
   border-bottom: 1px solid #444;
 }
 
+body.dark .local-time {
+  color: #bbb;
+}
+
 .alerts-container {
   margin-bottom: 20px;
 }
@@ -160,21 +171,6 @@ body.dark .insights-table td {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
-}
-
-.compare-button {
-  background: var(--accent-color);
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.compare-button:hover {
-  background: var(--accent-hover);
-  background-color: #1557b0;
 }
 
 .comparison-container {
