@@ -1,16 +1,69 @@
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--secondary-text, #555);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.weather-quote {
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--secondary-text, #555);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.city-input {
+  padding: 8px;
+  font-size: 1rem;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.search-button {
+  padding: 8px 12px;
+  margin-top: 10px;
+  font-size: 1rem;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-button:hover {
+  background-color: #1557b0;
+}
+
+.weather-panel {
+  background: var(--card-bg, #fff);
+  box-shadow: var(--shadow, 0 2px 4px rgba(0,0,0,0.1));
+  border-radius: 10px;
+  padding: 20px;
+}
+
 .nepal-weather-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
 }
 
 .nepal-weather-card {
-  background: var(--card-bg);
+  background: var(--card-bg, #fff);
+  box-shadow: var(--shadow, 0 2px 4px rgba(0,0,0,0.1));
   border-radius: 10px;
   padding: 15px;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
+  transition: transform 0.2s;
 }
 
 .nepal-weather-card:hover {
@@ -18,16 +71,56 @@
 }
 
 .nepal-weather-card h4 {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .nepal-weather-card .temp {
-  font-size: 1.3rem;
-  font-weight: bold;
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 .nepal-weather-card .desc {
-  text-transform: capitalize;
-  color: var(--text-color);
   font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+/* Dark Mode Support */
+body.dark .title {
+  color: #f0f0f0;
+}
+
+body.dark .subtitle {
+  color: #bbb;
+}
+
+body.dark .weather-quote {
+  color: #bbb;
+}
+
+body.dark .city-input {
+  border-color: #444;
+  background-color: #2a2a2a;
+  color: #ddd;
+}
+
+body.dark .search-button {
+  background-color: #3c8ddf;
+}
+
+body.dark .search-button:hover {
+  background-color: #2a6ab0;
+}
+
+body.dark .weather-panel {
+  background: #2a2a2a;
+}
+
+body.dark .nepal-weather-card {
+  background: #2a2a2a;
+}
+
+body.dark .nepal-weather-card h4,
+body.dark .nepal-weather-card .temp,
+body.dark .nepal-weather-card .desc {
+  color: #f0f0f0;
 }

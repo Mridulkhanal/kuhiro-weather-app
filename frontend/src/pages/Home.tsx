@@ -46,6 +46,57 @@ const getWeatherTip = (condition: string, lang: string): string => {
   }
 };
 
+const quotes = [
+  {
+    en: "The sun always shines above the clouds.",
+    ne: "बादलमाथि सधैं घाम चम्किन्छ।"
+  },
+  {
+    en: "Rain is just confetti from the sky.",
+    ne: "वर्षा आकाशबाट झरेको रंगीन कागज हो।"
+  },
+  {
+    en: "After rain comes the rainbow.",
+    ne: "वर्षापछि इन्द्रेणी आउँछ।"
+  },
+  {
+    en: "Snowflakes are kisses from heaven.",
+    ne: "हिउँका टुक्राहरू स्वर्गबाट आएका चुम्बन हुन्।"
+  },
+  {
+    en: "Let the wind carry your worries away.",
+    ne: "हावालाई तिम्रा चिन्ताहरू उडाउन देऊ।"
+  },
+  {
+    en: "Clouds come floating into my life, no longer to carry rain, but to add color.",
+    ne: "बादलहरू मेरो जीवनमा तैरिएर आउँछन्, वर्षा बोक्न होइन, रंग थप्न।"
+  },
+  {
+    en: "A sunny day brings a warm heart.",
+    ne: "घाम लागेको दिनले मन तातो बनाउँछ।"
+  },
+  {
+    en: "Every raindrop tells a story.",
+    ne: "प्रत्येक थोपा वर्षाले कथा सुनाउँछ।"
+  },
+  {
+    en: "Rainbows paint the sky with hope.",
+    ne: "इन्द्रेणीले आकाशलाई आशाले रंगाउँछ।"
+  },
+  {
+    en: "Snow turns the world into a quiet dream.",
+    ne: "हिउँले संसारलाई शान्त सपना बनाउँछ।"
+  },
+  {
+    en: "The breeze whispers secrets of the sky.",
+    ne: "हावाले आकाशका रहस्यहरू फुसफुसाउँछ।"
+  },
+  {
+    en: "Clouds dance to the rhythm of the wind.",
+    ne: "बादलहरू हावाको तालमा नाच्छन्।"
+  }
+];
+
 const Home = () => {
   const [weather, setWeather] = useState<any>(null);
   const [city, setCity] = useState("");
@@ -55,6 +106,7 @@ const Home = () => {
   const [error, setError] = useState("");
   const [tomorrowForecast, setTomorrowForecast] = useState<{ max: number; min: number } | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [quoteIndex, setQuoteIndex] = useState(0);
 
   // Nepal overview state
   const [nepalWeather, setNepalWeather] = useState<any[]>([]);
@@ -63,16 +115,6 @@ const Home = () => {
   const { lang } = useLanguage();
   const unit = localStorage.getItem("kuhiro_unit") === "imperial" ? "imperial" : "metric";
   const unitSymbol = unit === "imperial" ? "°F" : "°C";
-
-  useEffect(() => {
-    const interval = setInterval(() => setCurrentTime(new Date()), 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("kuhiro_history") || "[]");
-    setHistory(saved);
-  }, []);
 
   const handleSearch = () => {
     const searchCity = inputValue.trim();
@@ -84,6 +126,23 @@ const Home = () => {
       localStorage.setItem("kuhiro_history", JSON.stringify(updatedHistory));
     }
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("kuhiro_history") || "[]");
+    setHistory(saved);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setQuoteIndex((prev) => (prev + 1) % quotes.length);
+    }, 10000); // every 10s
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const savedCity = localStorage.getItem("kuhiro_last_city");
@@ -120,7 +179,7 @@ const Home = () => {
         if (data && data.main) {
           setWeather(data);
         } else {
-          setError(lang === "ne" ? "मौसम जानकारी लोड गर्न सकिएन ।" : "Failed to load weather data.");
+          setError(lang === "ne" ? "मौसम जानकारी लोड गर्न सकिएन।" : "Failed to load weather data.");
         }
       });
 
@@ -175,6 +234,9 @@ const Home = () => {
           ? "तपाईंको स्थान अनुसार रियल-टाइम मौसम जानकारी।"
           : "Real-time weather based on your location."}
       </p>
+      <div className="weather-quote">
+        <p>{quotes[quoteIndex][lang]}</p>
+      </div>
 
       {/* Search */}
       <div style={{ position: "relative", margin: "20px 0" }}>
@@ -240,11 +302,11 @@ const Home = () => {
               {isDayTime ? "☀️" : "🌙"} {lang === "ne" ? `${weather.name} को मौसम` : `Weather in ${weather.name}`}
             </h3>
             <h5 style={{ marginTop: "10px" }}>
-                  {formattedDate}
-                </h5>
-                <h5 style={{ marginTop: "-10px"}}>
-                  {formattedTime}
-                </h5>
+              {formattedDate}
+            </h5>
+            <h5 style={{ marginTop: "-10px" }}>
+              {formattedTime}
+            </h5>
             <p style={{ textAlign: "center", marginTop: "-8px" }}>
               {isDayTime
                 ? lang === "ne" ? "अहिले दिनको समय हो" : "It's daytime"
@@ -284,7 +346,7 @@ const Home = () => {
       {/* Nepal Weather Overview */}
       <div style={{ marginTop: "50px" }}>
         <h3 style={{ textAlign: "center", fontSize: "1.4rem", marginBottom: "20px" }}>
-         {lang === "ne" ? "नेपालका प्रमुख शहरहरूको मौसम" : "Nepal Weather Overview"}
+          {lang === "ne" ? "नेपालका प्रमुख शहरहरूको मौसम" : "Nepal Weather Overview"}
         </h3>
         {loadingNepal ? (
           <div style={{ textAlign: "center" }}>
