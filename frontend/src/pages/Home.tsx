@@ -48,52 +48,115 @@ const getWeatherTip = (condition: string, lang: string): string => {
 
 const quotes = [
   {
-    en: "The sun always shines above the clouds.",
-    ne: "बादलमाथि सधैं घाम चम्किन्छ।"
+    en: "☀️ The sun always shines above the clouds.",
+    ne: "☀️ बादलमाथि सधैं घाम चम्किन्छ।"
   },
   {
-    en: "Rain is just confetti from the sky.",
-    ne: "वर्षा आकाशबाट झरेको रंगीन कागज हो।"
+    en: "🌧️ Rain is just confetti from the sky.",
+    ne: "🌧️ वर्षा आकाशबाट झरेको रंगीन कागज हो।"
   },
   {
-    en: "After rain comes the rainbow.",
-    ne: "वर्षापछि इन्द्रेणी आउँछ।"
+    en: "🌈 After rain comes the rainbow.",
+    ne: "🌈 वर्षापछि इन्द्रेणी आउँछ।"
   },
   {
-    en: "Snowflakes are kisses from heaven.",
-    ne: "हिउँका टुक्राहरू स्वर्गबाट आएका चुम्बन हुन्।"
+    en: "❄️ Snowflakes are kisses from heaven.",
+    ne: "❄️ हिउँका टुक्राहरू स्वर्गबाट आएका चुम्बन हुन्।"
   },
   {
-    en: "Let the wind carry your worries away.",
-    ne: "हावालाई तिम्रा चिन्ताहरू उडाउन देऊ।"
+    en: "🌬️ Let the wind carry your worries away.",
+    ne: "🌬️ हावालाई तिम्रा चिन्ताहरू उडाउन देऊ।"
   },
   {
-    en: "Clouds come floating into my life, no longer to carry rain, but to add color.",
-    ne: "बादलहरू मेरो जीवनमा तैरिएर आउँछन्, वर्षा बोक्न होइन, रंग थप्न।"
+    en: "☁️ Clouds come floating into my life, no longer to carry rain, but to add color.",
+    ne: "☁️ बादलहरू मेरो जीवनमा तैरिएर आउँछन्, वर्षा बोक्न होइन, रंग थप्न।"
   },
   {
-    en: "A sunny day brings a warm heart.",
-    ne: "घाम लागेको दिनले मन तातो बनाउँछ।"
+    en: "☀️ A sunny day brings a warm heart.",
+    ne: "☀️ घाम लागेको दिनले मन तातो बनाउँछ।"
   },
   {
-    en: "Every raindrop tells a story.",
-    ne: "प्रत्येक थोपा वर्षाले कथा सुनाउँछ।"
+    en: "🌧️ Every raindrop tells a story.",
+    ne: "🌧️ प्रत्येक थोपा वर्षाले कथा सुनाउँछ।"
   },
   {
-    en: "Rainbows paint the sky with hope.",
-    ne: "इन्द्रेणीले आकाशलाई आशाले रंगाउँछ।"
+    en: "🌈 Rainbows paint the sky with hope.",
+    ne: "🌈 इन्द्रेणीले आकाशलाई आशाले रंगाउँछ।"
   },
   {
-    en: "Snow turns the world into a quiet dream.",
-    ne: "हिउँले संसारलाई शान्त सपना बनाउँछ।"
+    en: "❄️ Snow turns the world into a quiet dream.",
+    ne: "❄️ हिउँले संसारलाई शान्त सपना बनाउँछ।"
   },
   {
-    en: "The breeze whispers secrets of the sky.",
-    ne: "हावाले आकाशका रहस्यहरू फुसफुसाउँछ।"
+    en: "🌬️ The breeze whispers secrets of the sky.",
+    ne: "🌬️ हावाले आकाशका रहस्यहरू फुसफुसाउँछ।"
   },
   {
-    en: "Clouds dance to the rhythm of the wind.",
-    ne: "बादलहरू हावाको तालमा नाच्छन्।"
+    en: "☁️ Clouds dance to the rhythm of the wind.",
+    ne: "☁️ बादलहरू हावाको तालमा नाच्छन्।"
+  }
+];
+
+const weatherFacts = [
+  {
+    en: {
+      title: "🌡️ Highest Temperature in Nepal",
+      description: "The highest temperature recorded in Nepal was 46.4°C in Dhangadhi on June 16, 1995."
+    },
+    ne: {
+      title: "🌡️ नेपालमा उच्च तापमान",
+      description: "नेपालमा रेकर्ड गरिएको उच्च तापमान ४६.४ डिग्री सेल्सियस धनगढीमा जुन १६, १९९५ मा थियो।"
+    }
+  },
+  {
+    en: {
+      title: "🌫️ How Fog Forms",
+      description: "Fog forms when the temperature drops to the dew point, causing water vapor to condense into tiny droplets."
+    },
+    ne: {
+      title: "🌫️ कुहिरो कसरी बन्छ",
+      description: "कुहिरो तब बन्छ जब तापमान ओस बिन्दुमा झर्छ, जसले पानीको वाफलाई साना थोपाहरूमा संघनन गर्छ।"
+    }
+  },
+  {
+    en: {
+      title: "🌧️ Monsoon Magic",
+      description: "Nepal’s monsoon season (June–September) brings 80% of the annual rainfall, vital for agriculture."
+    },
+    ne: {
+      title: "🌧️ मनसुनको जादु",
+      description: "नेपालको मनसुन सिजन (जुन–सेप्टेम्बर) मा वार्षिक वर्षाको ८०% हुन्छ, जुन कृषिका लागि महत्त्वपूर्ण छ।"
+    }
+  },
+  {
+    en: {
+      title: "🏔️ Himalayan Weather",
+      description: "The Himalayas create diverse microclimates, from tropical valleys to arctic peaks."
+    },
+    ne: {
+      title: "🏔️ हिमालयको मौसम",
+      description: "हिमालयले उष्ण उपत्यकादेखि आर्कटिक चुचुरासम्म विविध सूक्ष्म जलवायु सिर्जना गर्छ।"
+    }
+  },
+  {
+    en: {
+      title: "❄️ Snow in Nepal",
+      description: "Snowfall is common above 3,000 meters in Nepal, especially in winter (December–February)."
+    },
+    ne: {
+      title: "❄️ नेपालमा हिउँ",
+      description: "नेपालमा ३,००० मिटरभन्दा माथि हिउँ पर्ने गर्छ, विशेषगरी हिउँदमा (डिसेम्बर–फेब्रुअरी)।"
+    }
+  },
+  {
+    en: {
+      title: "🌬️ Wind Patterns",
+      description: "Winds in Nepal are influenced by the monsoon and jet streams, shaping local weather."
+    },
+    ne: {
+      title: "🌬️ हावाको ढाँचा",
+      description: "नेपालमा हावाहरू मनसुन र जेट स्ट्रिमद्वारा प्रभावित हुन्छन्, जसले स्थानीय मौसमलाई आकार दिन्छ।"
+    }
   }
 ];
 
@@ -107,6 +170,8 @@ const Home = () => {
   const [tomorrowForecast, setTomorrowForecast] = useState<{ max: number; min: number } | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [quoteIndex, setQuoteIndex] = useState(0);
+  const [factIndex, setFactIndex] = useState(0);
+  const [isFactAutoRotating, setIsFactAutoRotating] = useState(true);
 
   // Nepal overview state
   const [nepalWeather, setNepalWeather] = useState<any[]>([]);
@@ -127,6 +192,16 @@ const Home = () => {
     }
   };
 
+  const handlePrevFact = () => {
+    setIsFactAutoRotating(false);
+    setFactIndex((prev) => (prev - 1 + weatherFacts.length) % weatherFacts.length);
+  };
+
+  const handleNextFact = () => {
+    setIsFactAutoRotating(false);
+    setFactIndex((prev) => (prev + 1) % weatherFacts.length);
+  };
+
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(interval);
@@ -145,6 +220,25 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isFactAutoRotating) {
+      interval = setInterval(() => {
+        setFactIndex((prev) => (prev + 1) % weatherFacts.length);
+      }, 10000); // every 10s
+    }
+    return () => clearInterval(interval);
+  }, [isFactAutoRotating]);
+
+  useEffect(() => {
+    if (!isFactAutoRotating) {
+      const timeout = setTimeout(() => {
+        setIsFactAutoRotating(true);
+      }, 20000); // resume auto-rotation after 20s
+      return () => clearTimeout(timeout);
+    }
+  }, [isFactAutoRotating]);
+
+  useEffect(() => {
     const savedCity = localStorage.getItem("kuhiro_last_city");
     if (savedCity) {
       setCity(savedCity);
@@ -157,17 +251,26 @@ const Home = () => {
               `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${process.env.REACT_APP_WEATHER_KEY}`
             );
             const data = await res.json();
-            const geoCity = data?.[0]?.name || "Kathmandu";
-            setCity(geoCity);
-            localStorage.setItem("kuhiro_last_city", geoCity);
+            if (data?.[0]?.name) {
+              const geoCity = data[0].name;
+              setCity(geoCity);
+              localStorage.setItem("kuhiro_last_city", geoCity);
+            } else {
+              setCity("Kathmandu");
+              setError(lang === "ne" ? "स्थान पत्ता लगाउन सकिएन। काठमाडौं प्रयोग गरियो।" : "Could not detect location. Using Kathmandu.");
+            }
           } catch {
             setCity("Kathmandu");
+            setError(lang === "ne" ? "स्थान पत्ता लगाउन सकिएन। काठमाडौं प्रयोग गरियो।" : "Could not detect location. Using Kathmandu.");
           }
         },
-        () => setCity("Kathmandu")
+        () => {
+          setCity("Kathmandu");
+          setError(lang === "ne" ? "जियोलोकेसन अस्वीकृत। काठमाडौं प्रयोग गरियो।" : "Geolocation denied. Using Kathmandu.");
+        }
       );
     }
-  }, []);
+  }, [lang]);
 
   useEffect(() => {
     if (city) {
@@ -179,7 +282,11 @@ const Home = () => {
         if (data && data.main) {
           setWeather(data);
         } else {
-          setError(lang === "ne" ? "मौसम जानकारी लोड गर्न सकिएन।" : "Failed to load weather data.");
+          setError(
+            lang === "ne"
+              ? "मौसम जानकारी लोड गर्न सकिएन। कृपया API कुञ्जी जाँच गर्नुहोस्।"
+              : "Failed to load weather data. Please check API key."
+          );
         }
       });
 
@@ -208,21 +315,30 @@ const Home = () => {
   // Fetch Nepal weather overview
   useEffect(() => {
     setLoadingNepal(true);
-    Promise.all(nepalCities.map((c) =>
-      fetchWeather(c).then(data => ({ city: c, ...data }))
-    ))
-      .then(results => {
-        setNepalWeather(results.filter(r => r && r.main));
+    Promise.all(
+      nepalCities.map((c) =>
+        fetchWeather(c).then((data) => ({ city: c, ...data }))
+      )
+    )
+      .then((results) => {
+        setNepalWeather(results.filter((r) => r && r.main));
         setLoadingNepal(false);
       })
-      .catch(() => setLoadingNepal(false));
-  }, [unit]);
+      .catch(() => {
+        setLoadingNepal(false);
+        setError(
+          lang === "ne"
+            ? "नेपालको मौसम जानकारी लोड गर्न सकिएन।"
+            : "Failed to load Nepal weather data."
+        );
+      });
+  }, [unit, lang]);
 
   const handleCityClick = (clickedCity: string) => {
     setInputValue(clickedCity);
     setCity(clickedCity);
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }, 100);
   };
 
@@ -278,18 +394,18 @@ const Home = () => {
 
         const localDate = new Date(currentTime.getTime() + (weather.timezone * 1000));
 
-        const dateFormatter = new Intl.DateTimeFormat(lang === 'ne' ? 'ne-NP' : 'en-US', {
-          timeZone: 'UTC',
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
+        const dateFormatter = new Intl.DateTimeFormat(lang === "ne" ? "ne-NP" : "en-US", {
+          timeZone: "UTC",
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
         });
 
-        const timeFormatter = new Intl.DateTimeFormat(lang === 'ne' ? 'ne-NP' : 'en-US', {
-          timeZone: 'UTC',
-          hour: '2-digit',
-          minute: '2-digit',
+        const timeFormatter = new Intl.DateTimeFormat(lang === "ne" ? "ne-NP" : "en-US", {
+          timeZone: "UTC",
+          hour: "2-digit",
+          minute: "2-digit",
           hour12: true,
         });
 
@@ -301,16 +417,16 @@ const Home = () => {
             <h3 style={{ textAlign: "center", fontSize: "1.5rem" }}>
               {isDayTime ? "☀️" : "🌙"} {lang === "ne" ? `${weather.name} को मौसम` : `Weather in ${weather.name}`}
             </h3>
-            <h5 style={{ marginTop: "10px" }}>
-              {formattedDate}
-            </h5>
-            <h5 style={{ marginTop: "-10px" }}>
-              {formattedTime}
-            </h5>
+            <h5 style={{ marginTop: "10px" }}>{formattedDate}</h5>
+            <h5 style={{ marginTop: "-10px" }}>{formattedTime}</h5>
             <p style={{ textAlign: "center", marginTop: "-8px" }}>
               {isDayTime
-                ? lang === "ne" ? "अहिले दिनको समय हो" : "It's daytime"
-                : lang === "ne" ? "अहिले रातको समय हो" : "It's nighttime"}
+                ? lang === "ne"
+                  ? "अहिले दिनको समय हो"
+                  : "It's daytime"
+                : lang === "ne"
+                ? "अहिले रातको समय हो"
+                : "It's nighttime"}
             </p>
             <div className="weather-panel" style={{ display: "flex", gap: "40px" }}>
               <div className="weather-left" style={{ flex: 1, textAlign: "center" }}>
@@ -318,11 +434,14 @@ const Home = () => {
                 <p style={{ textTransform: "capitalize" }}>{weather.weather[0].description}</p>
                 {tomorrowForecast && (
                   <p>
-                    🗕️ {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow Forecast"}: {Math.round(tomorrowForecast.min)}{unitSymbol} / {Math.round(tomorrowForecast.max)}{unitSymbol}
+                    🗕️ {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow Forecast"}: {Math.round(tomorrowForecast.min)}
+                    {unitSymbol} / {Math.round(tomorrowForecast.max)}
+                    {unitSymbol}
                   </p>
                 )}
                 <p className="temp" style={{ fontSize: "2.5rem", margin: "10px 0" }}>
-                  {Math.round(weather.main.temp)}{unitSymbol}
+                  {Math.round(weather.main.temp)}
+                  {unitSymbol}
                 </p>
                 <div style={{ marginTop: "20px" }}>
                   <p style={{ fontStyle: "italic", color: "#444" }}>
@@ -330,7 +449,8 @@ const Home = () => {
                   </p>
                   {weather._cached && (
                     <p style={{ color: "orange", fontSize: "0.85rem" }}>
-                      ⚠️ {lang === "ne" ? "क्यास गरिएको डाटा" : "Cached data"} – {new Date(weather._updated).toLocaleString()}
+                      ⚠️ {lang === "ne" ? "क्यास गरिएको डाटा" : "Cached data"} –{" "}
+                      {new Date(weather._updated).toLocaleString()}
                     </p>
                   )}
                 </div>
@@ -342,6 +462,25 @@ const Home = () => {
           </div>
         );
       })()}
+
+      {/* Weather Knowledge Corner */}
+      <div style={{ marginTop: "50px" }}>
+        <h3 style={{ textAlign: "center", fontSize: "1.4rem", marginBottom: "20px" }}>
+          {lang === "ne" ? "मौसम ज्ञान कुनो" : "Weather Knowledge Corner"}
+        </h3>
+        <div className="weather-facts-container">
+          <button onClick={handlePrevFact} className="fact-nav-button" aria-label={lang === "ne" ? "पछिल्लो तथ्य" : "Previous fact"}>
+            ←
+          </button>
+          <div className="weather-facts-card">
+            <h4>{weatherFacts[factIndex][lang].title}</h4>
+            <p>{weatherFacts[factIndex][lang].description}</p>
+          </div>
+          <button onClick={handleNextFact} className="fact-nav-button" aria-label={lang === "ne" ? "अर्को तथ्य" : "Next fact"}>
+            →
+          </button>
+        </div>
+      </div>
 
       {/* Nepal Weather Overview */}
       <div style={{ marginTop: "50px" }}>
@@ -356,15 +495,18 @@ const Home = () => {
         ) : (
           <div className="nepal-weather-grid">
             {nepalWeather.map((w) => (
-              <div 
-                className="nepal-weather-card" 
-                key={w.city} 
+              <div
+                className="nepal-weather-card"
+                key={w.city}
                 onClick={() => handleCityClick(w.city)}
                 style={{ cursor: "pointer" }}
               >
                 <h4>{w.city}</h4>
                 <WeatherIcon condition={w.weather[0].main} isDayTime={true} />
-                <p className="temp">{Math.round(w.main.temp)}{unitSymbol}</p>
+                <p className="temp">
+                  {Math.round(w.main.temp)}
+                  {unitSymbol}
+                </p>
                 <p className="desc">{w.weather[0].description}</p>
               </div>
             ))}
