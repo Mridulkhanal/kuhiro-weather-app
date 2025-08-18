@@ -8,9 +8,11 @@
   padding: 8px;
   font-size: 1rem;
   width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-.search-button {
+.search-button,.compare-button {
   padding: 8px 12px;
   margin-top: 10px;
   font-size: 1rem;
@@ -19,6 +21,11 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-button:hover,.compare-button:hover {
+  background-color: #1557b0;
 }
 
 .cache-warning {
@@ -27,13 +34,188 @@
   margin-top: 10px;
 }
 
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.local-time {
+  font-size: 0.9rem;
+  font-weight: normal;
+  color: var(--secondary-text, #555);
+  margin-left: 10px;
+}
+
+/* Insights Section */
+.insights-container {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.insights-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg, #fff);
+  box-shadow: var(--shadow, 0 2px 4px rgba(0,0,0,0.1));
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.insights-table th,
+.insights-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.insights-table th {
+  background: var(--accent-color, #1a73e8);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.insights-table td {
+  font-size: 0.95rem;
+  color: var(--secondary-text, #333);
+}
+
+.insights-table .insight-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.insights-table img.weather-icon-small {
+  width: 40px;
+  height: 40px;
+}
+
 /* Dark Mode Support */
 body.dark .forecast-container {
   background-color: #121212;
   color: #f0f0f0;
 }
 
+body.dark .city-input {
+  border-color: #444;
+  background-color: #2a2a2a;
+  color: #ddd;
+}
+
 body.dark .search-button {
   background-color: #3c8ddf;
   color: #fff;
+}
+
+body.dark .search-button:hover {
+  background-color: #2a6ab0;
+}
+
+body.dark .insights-table {
+  background: #2a2a2a;
+}
+
+body.dark .insights-table th {
+  background: #3c8ddf;
+}
+
+body.dark .insights-table td {
+  color: #f0f0f0;
+  border-bottom: 1px solid #444;
+}
+
+body.dark .local-time {
+  color: #bbb;
+}
+
+.alerts-container {
+  margin-bottom: 20px;
+}
+
+.alert-banner {
+  background-color: var(--alert-bg, #ffe8e8);
+  color: var(--alert-text, #a33);
+  padding: 12px 16px;
+  border-left: 5px solid #d9534f;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  position: relative;
+  box-shadow: var(--shadow, 0 2px 4px rgba(0,0,0,0.1));
+}
+
+.alert-banner p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+}
+
+.alert-banner small {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--secondary-text, #555);
+}
+
+.dismiss-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--alert-text, #a33);
+}
+
+.search-compare-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.comparison-container {
+  margin-top: 30px;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.comparison-card {
+  background: var(--card-bg);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.comparison-card:hover {
+  transform: translateY(-3px);
+  background: var(--card-hover);
+}
+
+.comparison-card h4 {
+  margin-bottom: 5px;
+}
+
+.comparison-card .condition {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.temp-range {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+.weather-icon-small {
+  width: 90px;
+  height: 90px;
+  margin: 5px 0;
+  filter: drop-shadow(rgba(0, 0, 0, 0.2) 0px 0px 4px);
 }

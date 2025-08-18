@@ -95,4 +95,37 @@ const WeatherMetrics: React.FC<WeatherMetricsProps> = ({
   );
 };
 
+export const fetchForecast = async (city: string) => {
+  try {
+    // Step 1: Get coordinates for city
+    const geoRes = await fetch(
+      `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${process.env.REACT_APP_WEATHER_KEY}`
+    );
+    const geoData = await geoRes.json();
+    if (!geoData[0]) return null;
+
+    const { lat, lon } = geoData[0];
+
+    // Step 2: Get forecast data (5-day grouped)
+    const forecastRes = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/api/forecast_weather/?lat=${lat}&lon=${lon}`
+    );
+    const forecastData = await forecastRes.json();
+
+    // Step 3: Get alerts from One Call API
+    const alertsRes = await fetch(
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${process.env.REACT_APP_WEATHER_KEY}&units=metric&exclude=minutely,hourly,daily`
+    );
+    const alertsData = await alertsRes.json();
+
+    return {
+      ...forecastData,
+      alerts: alertsData.alerts || [],
+    };
+  } catch (error) {
+    console.error("Error fetching forecast with alerts:", error);
+    return null;
+  }
+};
+
 export default WeatherMetrics;
