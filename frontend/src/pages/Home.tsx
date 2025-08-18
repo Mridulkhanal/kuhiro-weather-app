@@ -172,6 +172,8 @@ const Home = () => {
   const [quoteIndex, setQuoteIndex] = useState(0);
   const [factIndex, setFactIndex] = useState(0);
   const [isFactAutoRotating, setIsFactAutoRotating] = useState(true);
+
+  // Nepal overview state
   const [nepalWeather, setNepalWeather] = useState<any[]>([]);
   const [loadingNepal, setLoadingNepal] = useState(false);
 
@@ -246,12 +248,8 @@ const Home = () => {
           const { latitude, longitude } = position.coords;
           try {
             const res = await fetch(
-              `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${process.env.REACT_APP_OPENWEATHERMAP_API_KEY}`
+              `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${process.env.REACT_APP_WEATHER_KEY}`
             );
-            if (!res.ok) {
-              const errorData = await res.json().catch(() => ({}));
-              throw new Error(errorData.message || `Geolocation API error: ${res.status}`);
-            }
             const data = await res.json();
             if (data?.[0]?.name) {
               const geoCity = data[0].name;
@@ -261,14 +259,12 @@ const Home = () => {
               setCity("Kathmandu");
               setError(lang === "ne" ? "स्थान पत्ता लगाउन सकिएन। काठमाडौं प्रयोग गरियो।" : "Could not detect location. Using Kathmandu.");
             }
-          } catch (error: any) {
-            console.error(`Geolocation error: ${error.message}`);
+          } catch {
             setCity("Kathmandu");
-            setError(lang === "ne" ? `स्थान पत्ता लगाउन सकिएन: ${error.message}` : `Could not detect location: ${error.message}`);
+            setError(lang === "ne" ? "स्थान पत्ता लगाउन सकिएन। काठमाडौं प्रयोग गरियो।" : "Could not detect location. Using Kathmandu.");
           }
         },
-        (err) => {
-          console.error(`Geolocation error: ${err.message}`);
+        () => {
           setCity("Kathmandu");
           setError(lang === "ne" ? "जियोलोकेसन अस्वीकृत। काठमाडौं प्रयोग गरियो।" : "Geolocation denied. Using Kathmandu.");
         }
@@ -292,18 +288,9 @@ const Home = () => {
               : "Failed to load weather data. Please check API key."
           );
         }
-      }).catch((error: any) => {
-        setLoading(false);
-        setError(
-          lang === "ne"
-            ? `मौसम जानकारी लोड गर्न सकिएन: ${error.message}`
-            : `Failed to load weather data: ${error.message}`
-        );
-        console.error(`Weather error for ${city}: ${error.message}`);
       });
 
       fetchForecast(city).then((forecastData) => {
-        console.log(`Forecast data for ${city}:`, forecastData);
         if (forecastData && forecastData.list?.length > 0) {
           const now = new Date();
           const tomorrow = new Date();
@@ -314,68 +301,36 @@ const Home = () => {
             item.dt_txt.startsWith(tomorrowDate)
           );
 
-          console.log(`Tomorrow items for ${tomorrowDate}:`, tomorrowItems);
-
           if (tomorrowItems.length > 0) {
             const temps = tomorrowItems.map((item: any) => item.main.temp);
             const max = Math.max(...temps);
             const min = Math.min(...temps);
             setTomorrowForecast({ max, min });
-          } else {
-            setError(
-              lang === "ne"
-                ? "भोलिको पूर्वानुमान उपलब्ध छैन।"
-                : "Tomorrow's forecast is not available."
-            );
           }
-        } else {
-          setError(
-            lang === "ne"
-              ? "पूर्वानुमान डाटा लोड गर्न सकिएन।"
-              : "Failed to load forecast data."
-          );
         }
-      }).catch((error: any) => {
-        setError(
-          lang === "ne"
-            ? `पूर्वानुमान लोड गर्न सकिएन: ${error.message}`
-            : `Failed to load forecast: ${error.message}`
-        );
-        console.error(`Forecast error for ${city}: ${error.message}`);
       });
     }
-  }, [city, lang, unit]);
+  }, [city, lang]);
 
+  // Fetch Nepal weather overview
   useEffect(() => {
     setLoadingNepal(true);
     Promise.all(
       nepalCities.map((c) =>
-        fetchWeather(c).then((data) => ({ city: c, ...data })).catch((error: any) => {
-          console.error(`Weather fetch failed for Nepal city ${c}: ${error.message}`);
-          return null;
-        })
+        fetchWeather(c).then((data) => ({ city: c, ...data }))
       )
     )
       .then((results) => {
-        const validResults = results.filter((r) => r && r.main);
-        setNepalWeather(validResults);
+        setNepalWeather(results.filter((r) => r && r.main));
         setLoadingNepal(false);
-        if (validResults.length === 0) {
-          setError(
-            lang === "ne"
-              ? "नेपालको मौसम जानकारी लोड गर्न सकिएन।"
-              : "Failed to load Nepal weather data."
-          );
-        }
       })
-      .catch((error: any) => {
+      .catch(() => {
         setLoadingNepal(false);
         setError(
           lang === "ne"
-            ? `नेपालको मौसम जानकारी लोड गर्न सकिएन: ${error.message}`
-            : `Failed to load Nepal weather data: ${error.message}`
+            ? "नेपालको मौसम जानकारी लोड गर्न सकिएन।"
+            : "Failed to load Nepal weather data."
         );
-        console.error(`Nepal weather error: ${error.message}`);
       });
   }, [unit, lang]);
 
@@ -477,21 +432,17 @@ const Home = () => {
               <div className="weather-left" style={{ flex: 1, textAlign: "center" }}>
                 <WeatherIcon condition={weather.weather[0].main} isDayTime={isDayTime} />
                 <p style={{ textTransform: "capitalize" }}>{weather.weather[0].description}</p>
+                {tomorrowForecast && (
+                  <p>
+                    🗕️ {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow Forecast"}: {Math.round(tomorrowForecast.min)}
+                    {unitSymbol} / {Math.round(tomorrowForecast.max)}
+                    {unitSymbol}
+                  </p>
+                )}
                 <p className="temp" style={{ fontSize: "2.5rem", margin: "10px 0" }}>
                   {Math.round(weather.main.temp)}
                   {unitSymbol}
                 </p>
-                {tomorrowForecast ? (
-                  <p>
-                    {lang === "ne" ? "भोलिको तापक्रम" : "Tomorrow Forecast"}: <br />{Math.round(tomorrowForecast.min)}
-                    {unitSymbol} / {Math.round(tomorrowForecast.max)}
-                    {unitSymbol}
-                  </p>
-                ) : (
-                  <p style={{ color: "#555" }}>
-                    {lang === "ne" ? "भोलिको पूर्वानुमान उपलब्ध छैन।" : "Tomorrow's forecast is not available."}
-                  </p>
-                )}
                 <div style={{ marginTop: "20px" }}>
                   <p style={{ fontStyle: "italic", color: "#444" }}>
                     {getWeatherTip(weather.weather[0].main, lang)}
@@ -512,6 +463,7 @@ const Home = () => {
         );
       })()}
 
+      {/* Weather Knowledge Corner */}
       <div style={{ marginTop: "50px" }}>
         <h3 style={{ textAlign: "center", fontSize: "1.4rem", marginBottom: "20px" }}>
           {lang === "ne" ? "मौसम ज्ञान कुनो" : "Weather Knowledge Corner"}
@@ -530,6 +482,7 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Nepal Weather Overview */}
       <div style={{ marginTop: "50px" }}>
         <h3 style={{ textAlign: "center", fontSize: "1.4rem", marginBottom: "20px" }}>
           {lang === "ne" ? "नेपालका प्रमुख शहरहरूको मौसम" : "Nepal Weather Overview"}
@@ -539,7 +492,7 @@ const Home = () => {
             <ClipLoader size={30} color="#1a73e8" />
             <p>{lang === "ne" ? "नेपालको मौसम लोड हुँदैछ..." : "Loading Nepal weather..."}</p>
           </div>
-        ) : nepalWeather.length > 0 ? (
+        ) : (
           <div className="nepal-weather-grid">
             {nepalWeather.map((w) => (
               <div
@@ -558,10 +511,6 @@ const Home = () => {
               </div>
             ))}
           </div>
-        ) : (
-          <p style={{ textAlign: "center", color: "#555" }}>
-            {lang === "ne" ? "नेपालको मौसम जानकारी उपलब्ध छैन।" : "No Nepal weather data available."}
-          </p>
         )}
       </div>
     </div>
