@@ -1,0 +1,35 @@
+.quiz-container {
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+  padding: 20px;
+}
+
+.level-buttons button,
+.options-grid button {
+  background: var(--button-bg, #1a73e8);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.level-buttons button:hover,
+.options-grid button:hover {
+  background: var(--button-hover, #1558b0);
+}
+
+.question-box {
+  margin-top: 20px;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 20px;
+}

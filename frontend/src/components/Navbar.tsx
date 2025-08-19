@@ -37,6 +37,7 @@ const Navbar = () => {
         <li><Link to="/forecast">{lang === "ne" ? "पूर्वानुमान" : "Forecast"}</Link></li>
         <li><Link to="/map">{lang === "ne" ? "नक्शा" : "Map"}</Link></li>
         <li><Link to="/about">{lang === "ne" ? "हाम्रोबारे" : "About"}</Link></li>
+        <li><Link to="/quiz">{lang === "ne" ? "क्विज" : "Quiz"}</Link></li>
       </ul>
 
       <div className="toggle-group">
