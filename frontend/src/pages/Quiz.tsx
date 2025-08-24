@@ -1028,28 +1028,9 @@ const hardQuestions: Question[] = [
 ];
 
 const Quiz = () => {
-  const { lang } = useLanguage();
-  const [level, setLevel] = useState<"easy" | "medium" | "hard" | null>(null);
-  const [currentQ, setCurrentQ] = useState(0);
-  const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const [playerName, setPlayerName] = useState("");
-  const [highScores, setHighScores] = useState<{
-    easy: HighScore | null;
-    medium: HighScore | null;
-    hard: HighScore | null;
-  }>({
-    easy: null,
-    medium: null,
-    hard: null,
-  });
-  const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
-
-  const translations = {
+  const context = useLanguage();
+  const lang = context?.lang ?? "en";
+  const translations = context?.translations ?? {
     title: lang === "ne" ? "मौसम क्विज" : "Weather Quiz",
     enterName: lang === "ne" ? "आफ्नो नाम प्रविष्ट गर्नुहोस्:" : "Enter your name:",
     namePlaceholder: lang === "ne" ? "तपाईंको नाम" : "Your name",
@@ -1081,6 +1062,25 @@ const Quiz = () => {
     loading: lang === "ne" ? "लोड हुँदै..." : "Loading...",
     loadingMessage: lang === "ne" ? "कृपया क्विज तयार हुँदासम्म पर्खनुहोस्।" : "Please wait while the quiz is being prepared.",
   };
+  const [level, setLevel] = useState<"easy" | "medium" | "hard" | null>(null);
+  const [currentQ, setCurrentQ] = useState(0);
+  const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [playerName, setPlayerName] = useState("");
+  const [highScores, setHighScores] = useState<{
+    easy: HighScore | null;
+    medium: HighScore | null;
+    hard: HighScore | null;
+  }>({
+    easy: null,
+    medium: null,
+    hard: null,
+  });
+  const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
 
   const shuffleArray = <T,>(array: T[]): T[] => {
     const shuffled = [...array];
