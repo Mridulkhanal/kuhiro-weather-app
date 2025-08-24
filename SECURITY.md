@@ -1,5 +1,4 @@
 
-```markdown
 # Security Policy for Kuhiro Weather App
 
 ## Supported Versions
@@ -65,10 +64,10 @@ The Kuhiro Weather App implements several security practices to protect users an
 ## Contact
 
 For security-related concerns, please reach out to:  
-📧 **security@mridulkhanal.dev**
+📧 **khanalmridul74@gmail.com**
 
 For general inquiries, contact:  
-📧 **contact@mridulkhanal.dev**  
+📧 **khanalmridul74@gmail.com**  
 🌐 [GitHub](https://github.com/Mridulkhanal)
 
 ## Acknowledgments
