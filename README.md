@@ -19,7 +19,7 @@
 ## 📖 About the Project
 
 **Kuhiro** (_कुहिरो_) is a **real-time global weather forecast web application** designed to provide accurate weather data with an elegant and user-friendly interface.  
-It supports **multilingual functionality**, **offline mode**, and **animated weather icons**, ensuring a seamless experience across devices.
+It supports **multilingual functionality**, **offline mode**, and **animated weather icons**, ensuring a seamless experience across devices. The app also includes an engaging **Weather Quiz Game** to test users' knowledge with dynamic levels and leaderboard integration.
 
 ---
 
@@ -37,6 +37,12 @@ It supports **multilingual functionality**, **offline mode**, and **animated wea
 - 🎨 **Theme Friendly** (Light/Dark)
 - 💬 **Feedback Form** connected to **custom Django API**
 - ⚡ **Responsive & Accessible Design**
+- 🎮 **Weather Quiz Game**:
+  - Three difficulty levels: Easy (5 points/question), Medium (10 points), Hard (20 points)
+  - 10–20 questions per level with 4 answer options
+  - Level-wide countdown timer (Easy: 20s/question, Medium: 30–40s/question, Hard: 50–60s/question)
+  - Score tracking with localStorage and backend leaderboard
+  - Feedback messages (e.g., "Weather Wizard", "Keep Learning") with animations
 
 ---
 
@@ -140,11 +146,19 @@ GET  /api/weather/         # Get current weather
 GET  /api/forecast/        # Get 5-day forecast
 POST /api/feedback/        # Submit feedback
 GET  /api/feedback/        # Fetch all feedback
+GET  /api/quiz/<level>/    # Fetch quiz questions by level (easy, medium, hard)
+POST /api/quiz/submit/     # Submit quiz score
+GET  /api/quiz/leaderboard/ # Fetch top scores by level
 ```
-
+---
 # 📸 Screenshots
-(Will add screenshots of the homepage, forecast table, weather map, and feedback leter)
+![home page](./frontend/src/assets/preview/home.jpg)
+![forecast page](./frontend/src/assets/preview/forecast.jpg)
+![map](./frontend/src/assets/preview/map.jpg)
+![about](./frontend/src/assets/preview/about.jpg)
+![quiz](./frontend/src/assets/preview/quiz.jpg)
 
+---
 ## 👨‍💻 Contributors
 ```yaml
 
@@ -161,9 +175,9 @@ GET  /api/feedback/        # Fetch all feedback
 ```txt
 
 Origin: Started as a simple weather viewer for my location.
-Growth: Expanded into a multi-feature global forecast tool.
-Mission: Make weather information clear, accessible, and fast.
-I believe in code that scales with purpose — clean, efficient, and impactful
+Growth: Expanded into a multi-feature global forecast tool with an interactive quiz game.
+Mission: Make weather information and learning clear, accessible, and engaging.
+I believe in code that scales with purpose — clean, efficient, and impactful.
 
 ```
 ## 🧬 Coding Belief
@@ -176,11 +190,3 @@ while (true) {
     stayCurious();
 }
 ```
-
-## 📜 License
-```txt
-
-MIT License
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software...

@@ -9,6 +9,9 @@ from .models import Feedback
 from .serializers import FeedbackSerializer
 from rest_framework.pagination import PageNumberPagination
 from django.core.mail import EmailMultiAlternatives
+from rest_framework.decorators import api_view
+from .models import QuizScore
+from .serializers import QuizScoreSerializer
 
 class FeedbackPagination(PageNumberPagination):
     page_size = 5  # Load 5 feedback entries at a time
@@ -168,3 +171,37 @@ def forecast_weather(request):
         return JsonResponse(response.json())
     except requests.RequestException as e:
         return JsonResponse({"error": "Failed to fetch forecast data"}, status=500)
+
+@api_view(["POST"])
+def submit_score(request):
+    """Save or update player's best score"""
+    serializer = QuizScoreSerializer(data=request.data)
+    if serializer.is_valid():
+        player = serializer.validated_data["player"]
+        level = serializer.validated_data["level"]
+        score = serializer.validated_data["score"]
+
+        existing = QuizScore.objects.filter(player=player, level=level).first()
+        if not existing or score > existing.score:
+            if existing:
+                existing.score = score
+                existing.save()
+                return Response(QuizScoreSerializer(existing).data, status=status.HTTP_200_OK)
+            else:
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({"message": "Score not higher than existing."}, status=status.HTTP_200_OK)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+def leaderboard(request):
+    """Return top 10 scores for a given level"""
+    level = request.query_params.get("level")
+    if level not in ["easy", "medium", "hard"]:
+        return Response({"error": "Invalid level"}, status=status.HTTP_400_BAD_REQUEST)
+
+    scores = QuizScore.objects.filter(level=level).order_by("-score", "created_at")[:10]
+    serializer = QuizScoreSerializer(scores, many=True)
+    return Response(serializer.data)
