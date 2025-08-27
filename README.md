@@ -180,13 +180,3 @@ Mission: Make weather information and learning clear, accessible, and engaging.
 I believe in code that scales with purpose — clean, efficient, and impactful.
 
 ```
-## 🧬 Coding Belief
-```js
-
-while (true) {
-    learn();
-    build();
-    iterate();
-    stayCurious();
-}
-```
