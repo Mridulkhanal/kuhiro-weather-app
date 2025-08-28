@@ -24,6 +24,21 @@ const About = () => {
       role: lang === "ne" ? "API प्रदायक" : "API Provider",
       github: "https://openweathermap.org",
     },
+    {
+      name: "React",
+      role: lang === "ne" ? "फ्रेमवर्क" : "Framework",
+      github: "https://reactjs.org",
+    },
+    {
+      name: "TypeScript",
+      role: lang === "ne" ? "प्रोग्रामिङ भाषा" : "Programming Language",
+      github: "https://www.typescriptlang.org",
+    },
+    {
+      name: "Vite",
+      role: lang === "ne" ? "बिल्ड उपकरण" : "Build Tool",
+      github: "https://vitejs.dev",
+    },
   ];
 
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -137,6 +152,7 @@ const About = () => {
       <h3 className="section-title">{lang === "ne" ? "विशेषताहरू" : "Features"}</h3>
       <ul className="features-list">
         <p>{lang === "ne" ? "रियल-टाइम मौसम अपडेट" : "Real-time Weather Updates"}</p>
+        <p>{lang === "ne" ? "स्थान-आधारित पूर्वानुमान" : "Location-based Forecasting"}</p>
         <p>{lang === "ne" ? "बहुभाषिक समर्थन" : "Multilingual Support"}</p>
         <p>{lang === "ne" ? "उपयोगकर्ता-मित्रता" : "User-friendly Interface"}</p>
       </ul>
