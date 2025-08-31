@@ -42,7 +42,6 @@ It supports **multilingual functionality**, **offline mode**, and **animated wea
   - 10–20 questions per level with 4 answer options
   - Level-wide countdown timer (Easy: 20s/question, Medium: 30–40s/question, Hard: 50–60s/question)
   - Score tracking with localStorage and backend leaderboard
-  - Feedback messages (e.g., "Weather Wizard", "Keep Learning") with animations
 
 ---
 
@@ -180,3 +179,4 @@ Mission: Make weather information and learning clear, accessible, and engaging.
 I believe in code that scales with purpose — clean, efficient, and impactful.
 
 ```
+
