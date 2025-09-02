@@ -40,7 +40,6 @@ It supports **multilingual functionality**, **offline mode**, and **animated wea
 - 🎮 **Weather Quiz Game**:
   - Three difficulty levels: Easy (5 points/question), Medium (10 points), Hard (20 points)
   - 10–20 questions per level with 4 answer options
-  - Level-wide countdown timer (Easy: 20s/question, Medium: 30–40s/question, Hard: 50–60s/question)
 
 ---
 
@@ -178,5 +177,6 @@ Mission: Make weather information and learning clear, accessible, and engaging.
 I believe in code that scales with purpose — clean, efficient, and impactful.
 
 ```
+
 
 
